@@ -22,6 +22,9 @@ class PythonListener: #ResultModifier
         self.listOfMessages = list()
 
 
+    def start_test(self, test, result):
+        test.body.create_keyword(name='Log', args=['Keyword added by listener! Insert <b>Boxplot</b> here <img src="example_result.png">', 'HTML'])
+
     def end_test(self, data, test):
        # Relevanten Daten des Testfalls extrahieren und in die DB schreiben
         testcase_val = (str(test.starttime), str(test.elapsedtime), str(test.longname), str(test.status))
