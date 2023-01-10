@@ -2,7 +2,7 @@
 from robot.api import SuiteVisitor
 from robot.api.logger import info, debug, trace, console
 import json, os.path
-import mysql.connector
+import sqlite3
 
 # Constants
 DEFAULT_MAX_EXECUTION_TIME_OF_TESTCASE = 10 # Sekunden
@@ -52,32 +52,19 @@ class ExecutionTimeChecker(SuiteVisitor):
 
         self.listOfMessages.append(test.name + ' ' + performance_metrics_msg)
         
-        
-        
-
-    #def end_suite(self, suite):
-    #    self.outfile = open(DEFAULT_OUTFILE, 'w')
-    #    self.outfile.write(json.dumps(self.testcases))
-     #   self.outfile.close()
-
 
     def connect_to_database(self):
-        self.mysqldb = mysql.connector.connect(
-            host=DB_URL,
-            user=DB_USER,
-            password=DB_PASS,
-            database=DB_DATABASE
-        )
-        self.dbcursor = self.mysqldb.cursor()
+        self.con = sqlite3.connect("robot-exec-times.db")
+        self.dbcursor = self.con.cursor()
 
     def insert_testcase_to_database(self, testcase):
-        sql = "INSERT INTO executiontimes (starttime, elapsedTime, longname, status) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO keywords_exec_times (starttime, elapsedTime, longname, status) VALUES (?, ?, ?, ?)"
         self.dbcursor.execute(sql, testcase)
-        self.mysqldb.commit()
+        self.con.commit()
     
     def get_avg_execution_time_from_database(self, longname, last_n_runs):
         #TODO: Last_n_runs wird nicht genutzt
-        sql = "SELECT AVG(elapsedTime) FROM (SELECT elapsedTime FROM executiontimes WHERE longname = %s ORDER BY ID DESC LIMIT 5) AS TEMP;"
+        sql = "SELECT AVG(elapsedTime) FROM (SELECT elapsedTime FROM keywords_exec_times WHERE longname = ? ORDER BY ID DESC LIMIT 5) AS TEMP;"
         val = (str(longname),)
         self.dbcursor.execute(sql, val)
 
