@@ -16,6 +16,21 @@ robot --prerebotmodifier modifier/ExecutionTimeChecker.py:5 -L info testcases
 ```
 Hinweis: `prerebotmodifier` wird nach der Testausführung basierend auf dem Result-Modell ausgeführt und verändert die report.html, jedoch nicht die output.xml (vgl. Robot-Docs 3.6.9).
 
+
+## Quick Start - Neu
+```bash
+# Starten des System-under-Test
+python3 sut/server.py
+# Ausführung der beispielhaften Tests ohne PerfEval
+# Vorher: Installationsanleitung gemäß https://github.com/robotframework/SeleniumLibrary
+python3 -m robot testcases
+# Ausführung der Tests mit PerfEval als ResultModifier
+# Erläuterung: Der ResultModifier läuft nach der Ausführung aller Tests und verändert nur die log.html und report.html
+python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py -L info testcases
+
+```
+
+
 ## Screenshot
 
 ![](example_result.png)
@@ -23,3 +38,4 @@ Hinweis: `prerebotmodifier` wird nach der Testausführung basierend auf dem Resu
 ## Quellen
 - Robot-Modifizer: https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-532
 - Alternative Lösung über Listener denkbar: https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-625
+- https://github.com/robotframework/SeleniumLibrary
