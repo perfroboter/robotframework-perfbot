@@ -2,31 +2,29 @@
 
 ## Idee
 
-Mittels Modifizer wird während der Laufzeit die aktuelle Testdauer jedes Testfalls analyisiert und mit einem Maximalwert und dem Durchschnitt der letzten Läufe der Vergangenheit verglichen. Lässt sich daraus ein Performanzproblem erkennen, so wir der Testfall auf Fehlerhaft gesetzt und mit einer Message ausgestattet.
+Mittels Modifizer oder Listener wird während der Laufzeit die aktuelle Testdauer jedes Testfalls analyisiert und mit einem Maximalwert und dem Durchschnitt der letzten Läufe der Vergangenheit verglichen. Lässt sich daraus ein Performanzproblem erkennen, so wir der Testfall auf Fehlerhaft gesetzt und mit einer Message ausgestattet.
 
-## Architektur
+## Architektur / Inhalt
 
-- `modifier/ExecutionTimeChecker.py`: Programm, welches im Hintergrund die aktuellen Laufzeit zu jedem Testfall evaluiert
-- `sqlite` Installationsskript zur Anlage der sqlite3-Datenbank
+- `perf_analyser/PerfEvalListener.py`: Robot-Listener, der währrend der Laufzeit die Testfälle analysiert
+- `perf_analyser/PerfEvalResultModifier.py`: Robot-Result-Listner, der nach der Ausführung der Test die Performanz analysiert und die Ergebnisse in der log.html und report.html festhält
+- `perf_analyser/Sqlite3PersistenceService.py`: Zugriff und Persistierung der Testläufe mittels Sqlite3-Datenbank
 
 ## Quick Start
 ```bash
-# Parameterliste: max_seconds (Absolutes Maximum für jeden Testfall (hier 5 Sekunden)), max_deviation_from_last_runs (Prozentuale Abweichung von den zurückliegenen Ausführungen), last_n_runs (Beschränkung auf die letzten N Laufzeiten (noch nicht implementiert))
-robot --prerebotmodifier modifier/ExecutionTimeChecker.py:5 -L info testcases
-```
-Hinweis: `prerebotmodifier` wird nach der Testausführung basierend auf dem Result-Modell ausgeführt und verändert die report.html, jedoch nicht die output.xml (vgl. Robot-Docs 3.6.9).
-
-
-## Quick Start - Neu
-```bash
 # Starten des System-under-Test
 python3 sut/server.py
+
 # Ausführung der beispielhaften Tests ohne PerfEval
 # Vorher: Installationsanleitung gemäß https://github.com/robotframework/SeleniumLibrary
 python3 -m robot testcases
+
 # Ausführung der Tests mit PerfEval als ResultModifier
 # Erläuterung: Der ResultModifier läuft nach der Ausführung aller Tests und verändert nur die log.html und report.html
 python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py -L info testcases
+
+# Ausführung der Tests mit PerfEval als Listener
+python3 -m robot --listener perf_analyser/PerfEvalListener.py -L info testcases
 
 ```
 
