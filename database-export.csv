@@ -1,0 +1,36 @@
+id,starttime,elapsedTime,longname,status
+,20230112 11:59:49.479,588,Testcases.Example-Tests.Invalid Login.Invalid Username,PASS
+,20230112 11:59:50.068,445,Testcases.Example-Tests.Invalid Login.Invalid Password,PASS
+,20230112 11:59:50.515,484,Testcases.Example-Tests.Invalid Login.Invalid Username And Password,PASS
+,20230112 11:59:51.000,482,Testcases.Example-Tests.Invalid Login.Empty Username,PASS
+,20230112 11:59:51.484,519,Testcases.Example-Tests.Invalid Login.Empty Password,PASS
+,20230112 11:59:52.003,390,Testcases.Example-Tests.Invalid Login.Empty Username And Password,PASS
+,20230112 11:59:52.555,4116,Testcases.Example-Tests.Valid Login.Valid Login,PASS
+,20230112 12:00:29.353,642,Testcases.Example-Tests.Invalid Login.Invalid Username,PASS
+,20230112 12:00:29.996,409,Testcases.Example-Tests.Invalid Login.Invalid Password,PASS
+,20230112 12:00:30.408,456,Testcases.Example-Tests.Invalid Login.Invalid Username And Password,PASS
+,20230112 12:00:30.866,444,Testcases.Example-Tests.Invalid Login.Empty Username,PASS
+,20230112 12:00:31.311,462,Testcases.Example-Tests.Invalid Login.Empty Password,PASS
+,20230112 12:00:31.779,396,Testcases.Example-Tests.Invalid Login.Empty Username And Password,PASS
+,20230112 12:00:32.334,4300,Testcases.Example-Tests.Valid Login.Valid Login,PASS
+,20230112 12:01:08.293,582,Testcases.Example-Tests.Invalid Login.Invalid Username,PASS
+,20230112 12:01:08.882,511,Testcases.Example-Tests.Invalid Login.Invalid Password,PASS
+,20230112 12:01:09.400,571,Testcases.Example-Tests.Invalid Login.Invalid Username And Password,PASS
+,20230112 12:01:09.972,481,Testcases.Example-Tests.Invalid Login.Empty Username,PASS
+,20230112 12:01:10.453,398,Testcases.Example-Tests.Invalid Login.Empty Password,PASS
+,20230112 12:01:10.853,420,Testcases.Example-Tests.Invalid Login.Empty Username And Password,PASS
+,20230112 12:01:11.441,14023,Testcases.Example-Tests.Valid Login.Valid Login,PASS
+,20230112 13:41:20.979,391,Testcases.Example-Tests.Invalid Login.Invalid Username,PASS
+,20230112 13:41:21.378,358,Testcases.Example-Tests.Invalid Login.Invalid Password,PASS
+,20230112 13:41:21.739,356,Testcases.Example-Tests.Invalid Login.Invalid Username And Password,PASS
+,20230112 13:41:22.104,318,Testcases.Example-Tests.Invalid Login.Empty Username,PASS
+,20230112 13:41:22.428,327,Testcases.Example-Tests.Invalid Login.Empty Password,PASS
+,20230112 13:41:22.762,350,Testcases.Example-Tests.Invalid Login.Empty Username And Password,PASS
+,20230112 13:41:23.270,13398,Testcases.Example-Tests.Valid Login.Valid Login,PASS
+,20230112 13:43:14.801,541,Testcases.Example-Tests.Invalid Login.Invalid Username,PASS
+,20230112 13:43:15.348,398,Testcases.Example-Tests.Invalid Login.Invalid Password,PASS
+,20230112 13:43:15.750,367,Testcases.Example-Tests.Invalid Login.Invalid Username And Password,PASS
+,20230112 13:43:16.121,306,Testcases.Example-Tests.Invalid Login.Empty Username,PASS
+,20230112 13:43:16.431,415,Testcases.Example-Tests.Invalid Login.Empty Password,PASS
+,20230112 13:43:16.850,361,Testcases.Example-Tests.Invalid Login.Empty Username And Password,PASS
+,20230112 13:43:17.357,13543,Testcases.Example-Tests.Valid Login.Valid Login,PASS
