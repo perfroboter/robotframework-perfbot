@@ -26,6 +26,9 @@ python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py -L i
 # Ausführung der Tests mit PerfEval als Listener
 python3 -m robot --listener perf_analyser/PerfEvalListener.py -L info testcases
 
+# Ausführung mit Parametern
+python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py:stat_func=avg:devn=0.1:mode=break_test:db_path=robot-exec-times.db -L info testcases   
+
 ```
 
 

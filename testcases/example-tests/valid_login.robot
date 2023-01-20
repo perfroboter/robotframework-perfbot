@@ -11,6 +11,6 @@ Valid Login
     Input Username    demo
     Input Password    mode
     Submit Credentials
-    Sleep    10
+ #   Sleep    20
     Welcome Page Should Be Open
     [Teardown]    Close Browser
