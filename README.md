@@ -29,6 +29,9 @@ python3 -m robot --listener perf_analyser/PerfEvalListener.py -L info testcases
 # Ausführung mit Parametern
 python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py:stat_func=avg:devn=0.1:mode=break_test:db_path=robot-exec-times.db -L info testcases   
 
+# Generierung der Boxplots
+python3 -m robot --prerebotmodifier perf_analyser/PerfEvalResultModifier.py:stat_func='avg':devn=0.1:mode='boxplot':db_path="robot-exec-times.db" -L info testcases
+
 ```
 
 

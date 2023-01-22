@@ -1,10 +1,11 @@
 # see https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-532
 from robot.api import ResultVisitor
 from robot.api.logger import info, debug, trace, console
-import json, os.path
+import json, os
 import sqlite3
 from robot.result.model import TestCase, TestSuite
 from Sqlite3PersistenceService import Sqlite3PersistenceService
+from PerfEvalVisualizer import PerfEvalVisualizer
 
 # Constants
 DEFAULT_MAX_EXECUTION_TIME_OF_TESTCASE = 10 # Sekunden
@@ -14,6 +15,7 @@ DEFAULT_DATABASE = "robot-exec-times.db"
 DEFAULT_STAT_FUNCTION = "avg"
 DEFAULT_MODE_REPORT = "report"
 MODE_BREAK_TEST = "break_test"
+MODE_BOXPLOT = "boxplot"
 
 
 class PerfEvalResultModifier(ResultVisitor):
@@ -23,7 +25,6 @@ class PerfEvalResultModifier(ResultVisitor):
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
         devn: float=DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS, 
        db_path: str=DEFAULT_DATABASE, mode: str=DEFAULT_MODE_REPORT):
-        print("Prams",stat_func,devn,db_path,mode)
         self.stat_func = stat_func
         if not self.stat_func == DEFAULT_STAT_FUNCTION:
             raise NotImplementedError("Only Avg as statistical function supported yet.")
@@ -32,6 +33,7 @@ class PerfEvalResultModifier(ResultVisitor):
         #self.last_n_runs = last_n_runs
         self.db_path = db_path
         self.persistenceService = Sqlite3PersistenceService(db_path)
+        self.visualizer = PerfEvalVisualizer()
         #TODO: Eingabewerte auf Gültigkeit prüfen, z. B. durch Enum of mode
 
     def start_suite(self, suite: TestSuite):
@@ -40,15 +42,22 @@ class PerfEvalResultModifier(ResultVisitor):
             perf_stats = self.persistenceService.get_testsuite_stats(suite.longname)
 
             text: str = self._eval_and_to_string_perf_stats(suite.tests,perf_stats)
-            suite.metadata["Performance Analysis"] = text
+           
 
             self.persistenceService.store_many_testruns(suite.tests)
+
+            if self.mode == MODE_BOXPLOT:
+                testruns = self.persistenceService.get_testsuite_testruns(suite.longname)
+                abs_filename = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
+                text+= "\n *Boxplot* \n file://" + abs_filename +""
+
+            suite.metadata["Performance Analysis"] = text
+
 
     def visit_test(self, test):
         if self.mode == MODE_BREAK_TEST:
             calced_devn = self.perf_result_dict[test.longname][2]
             if calced_devn >self.max_deviation*100:
-                print("Calced: " + str(calced_devn) + " vs. Max: " + str(self.max_deviation))
                 old_test_status = test.status
                 test.status = 'FAIL'
                 test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
