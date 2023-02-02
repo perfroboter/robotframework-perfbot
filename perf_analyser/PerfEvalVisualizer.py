@@ -10,14 +10,14 @@ class PerfEvalVisualizer:
         pass
 
     def generate_boxplot_of_suite(self, hist_tests, act_tests):
-        df = pd.DataFrame(hist_tests, columns =["id" , "starttime" , "elapsedTime" , "longname" , "status"])
+        df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedTime" , "status"])
         df["elapsedTime"] = df["elapsedTime"].astype(int)
-        boxplot = df.boxplot(column=['elapsedTime'], by=['longname'], fontsize=8, vert=False)
+        boxplot = df.boxplot(column=['elapsedTime'], by=['name'], fontsize=8, vert=False)
         i = 1
         for label in boxplot.get_yticklabels():
             #label.get_text()
             for t in act_tests:
-                if t.longname == label.get_text():
+                if t.name == label.get_text():
                     boxplot.plot(t.elapsedtime,i,marker="o")
             i=i+1
         time = datetime.now()
