@@ -44,7 +44,7 @@ robot --prerebotmodifier perfbot/perfbot.py:db_path=[path to sqlite3 file] [path
 Aktivierung des Testbreaker-Modus:  
 Beispiel: Bei einer Abweichung (`devn`) der Testlaufzeit von 10% vom Durchschnitt der vergangen Testläufe soll der Testfall auf FAIL gesetzt werden.
 ```bash
-robot --prerebotmodifier perfbot/perfbot.py:devn:0.1:testbreaker=True [path to tests]
+robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:testbreaker=True [path to tests]
 ```
 
 Deaktivierung des Box-Plot-Modus:  
@@ -60,7 +60,7 @@ robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="ro
 ```
 
 ## Beispiel Login-Page
-In Ordner `./example` sind Beispiel-Testfälle aus der Repo der Selenium-Library (entnommen aus https://github.com/robotframework/SeleniumLibrary)  abgelegt. Die Tests wurden mehrmals mit Perfbot ausgeführt. Ebenfalls dort sind die dazugehörige Datenbank `robot-exec-times.db` und die Robot-Testresults (`log.html` / `report.html`), in denen die Performance-Analyse berichtet wurde, zu finden. Mit folgenden Befehl lassen sich das Beispiel starten (Installation der SeleniumLibrary vorausgesetzt):
+Im Ordner `./example` sind Beispiel-Testfälle aus der Repo der Selenium-Library (entnommen aus https://github.com/robotframework/SeleniumLibrary)  abgelegt. Die Tests wurden mehrmals mit Perfbot ausgeführt. Ebenfalls dort sind die dazugehörige Datenbank `robot-exec-times.db` und die Robot-Testresults (`log.html` / `report.html`), in denen die Performance-Analyse berichtet wurde, zu finden. Mit folgenden Befehl lassen sich das Beispiel starten (Installation der SeleniumLibrary vorausgesetzt):
 ```bash
 # 1. Starten des System-under-Test (Login-Page)
 python -m example/sut/server.py

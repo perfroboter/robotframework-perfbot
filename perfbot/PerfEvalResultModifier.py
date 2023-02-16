@@ -23,7 +23,7 @@ TEXT_PERF_ANALYSIS_FOOTNOTE = ""
 TEXT_PERF_ERROR_MESSAGE = "PerfError: Test run lasted {calced_devn:.2f} % than the average runs in the past and is thus above the maximum threshold of {max_devn:.2f} % (original test status was {old_test_status})."
 
 
-class Perfbot(ResultVisitor):
+class PerfEvalResultModifier(ResultVisitor):
     ROBOT_LISTENER_API_VERSION = 2
     
     perf_results_list_of_testsuite: list[JoinedPerfTestResult] = []
