@@ -17,13 +17,13 @@ DEFAULT_DATABASE_TECHNOLOGY = "sqlite3"
 DEFAULT_DATABASE_PATH = "robot-exec-times.db"
 DEFAULT_STAT_FUNCTION = "avg"
 TEXT_PERF_ANALYSIS_TABLE_HEADING = "*Summary of Tests Performance*\n\n| =Testcase= |  =Elapsed=  | =Avg= | =Min= | =Max= | =Evaluated test runs= | =Deviation from avg= |\n"
-TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg:.2f} | {min} | {max} | {count} | {devn:.2f} % |\n" 
+TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n" 
 TEXT_PERF_ANALYSIS_BOXPLOT = ""
 TEXT_PERF_ANALYSIS_FOOTNOTE = ""
 TEXT_PERF_ERROR_MESSAGE = "PerfError: Test run lasted {calced_devn:.2f} % than the average runs in the past and is thus above the maximum threshold of {max_devn:.2f} % (original test status was {old_test_status})."
 
 
-class PerfEvalResultModifier(ResultVisitor):
+class Perfbot(ResultVisitor):
     ROBOT_LISTENER_API_VERSION = 2
     
     perf_results_list_of_testsuite: list[JoinedPerfTestResult] = []
@@ -33,7 +33,7 @@ class PerfEvalResultModifier(ResultVisitor):
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
         devn: float=DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS, last_n_runs: int=DEFAULT_LAST_N_RUNS, db: str=DEFAULT_DATABASE_TECHNOLOGY,
-       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=False, testbreaker:bool=False):
+       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, testbreaker:bool=False):
         
         self.stat_func = stat_func
         if not self.stat_func == DEFAULT_STAT_FUNCTION:
@@ -88,11 +88,11 @@ class PerfEvalResultModifier(ResultVisitor):
                 if perf_result.longname == test.longname:
                     calced_devn = perf_result.devn
                     break
-            
-            if calced_devn >self.max_deviation*100:
-                old_test_status = test.status
-                test.status = 'FAIL'
-                test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
+            if calced_devn:
+                if calced_devn >self.max_deviation*100:
+                    old_test_status = test.status
+                    test.status = 'FAIL'
+                    test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
 
 
     def _eval_perf_of_tests(self, tests, perfstats) -> list[JoinedPerfTestResult]:
@@ -112,11 +112,10 @@ class PerfEvalResultModifier(ResultVisitor):
                 joined_stat_results.append(joined_test)
         return joined_stat_results
 
-
     def _get_perf_result_table(self, joined_perf_result_list: list[JoinedPerfTestResult]):
         text: str = TEXT_PERF_ANALYSIS_TABLE_HEADING
         for t in joined_perf_result_list:
-            text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=t.elapsedtime,avg=t.avg if t.avg is not None else "NO STATS",min=t.min if t.min is not None else "NO STATS",max=t.max if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=t.devn if t.devn is not None else "NO STATS")
+            text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=t.elapsedtime,avg=f'{t.avg:.2f}' if t.avg is not None else "NO STATS",min=t.min if t.min is not None else "NO STATS",max=t.max if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")
         return text
 
     """def _eval_and_to_string_perf_stats(self, tests, perfstats): 
