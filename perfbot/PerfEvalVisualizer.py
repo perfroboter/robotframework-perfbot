@@ -13,6 +13,12 @@ class PerfEvalVisualizer:
         df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedTime" , "status"])
         df["elapsedTime"] = df["elapsedTime"].astype(int)
         boxplot = df.boxplot(column=['elapsedTime'], by=['name'], fontsize=8, vert=False)
+
+        boxplot.set_xlabel("Elapsed time in ms")
+        boxplot.set_ylabel("Testcases")
+        boxplot.figure.suptitle('Box-Plot of the test duration times', fontsize=14, fontweight='bold')
+        boxplot.set_title("")
+        
         i = 1
         for label in boxplot.get_yticklabels():
             #label.get_text()
