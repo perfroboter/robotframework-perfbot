@@ -24,6 +24,8 @@ TEXT_PERF_ERROR_MESSAGE = "PerfError: Test run lasted {calced_devn:.2f} % than t
 
 
 class PerfEvalResultModifier(ResultVisitor):
+    """
+    """
     ROBOT_LISTENER_API_VERSION = 2
     
     perf_results_list_of_testsuite: list[JoinedPerfTestResult] = []
@@ -117,20 +119,3 @@ class PerfEvalResultModifier(ResultVisitor):
         for t in joined_perf_result_list:
             text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=t.elapsedtime,avg=f'{t.avg:.2f}' if t.avg is not None else "NO STATS",min=t.min if t.min is not None else "NO STATS",max=t.max if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")
         return text
-
-    """def _eval_and_to_string_perf_stats(self, tests, perfstats): 
-        text: str = TEXT_PERF_ANALYSIS_TABLE_HEADING
-        joined_stat_tests = []
-        
-        for t in tests:
-            isInStats = False
-            for ps in perfstats:
-                if ps[1] == t.longname:
-                    text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedTime=t.elapsedtime,avg=ps[2],min=ps[3],max=ps[4],count=ps[5],devn=100-ps[2]/t.elapsedtime*100)
-                    self.perf_result_dict[t.longname] = ((t,ps,100-ps[2]/t.elapsedtime*100))
-                    perfstats.remove(ps)
-                    isInStats = True
-                    break
-            if not isInStats:
-                    text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedTime=t.elapsedtime,avg="NO STATS",min="NO STATS",max="NO STATS",count="NO STATS",devn="NO STATS")
-        return text"""
