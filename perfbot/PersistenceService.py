@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABCMeta
 from robot.result.model import TestCase
 from model import *
+from typing import List
 
 class PersistenceService:
     __metaclass__ = ABCMeta
@@ -14,15 +15,15 @@ class PersistenceService:
         pass
 
     @abstractmethod
-    def select_testruns_by_testname(self, test_name, limit) -> list[Testrun]:
+    def select_testruns_by_testname(self, test_name, limit) -> List[Testrun]:
         pass
 
     @abstractmethod
-    def select_multiple_testruns_by_suitename(self, suite_name) -> list[Testrun]:
+    def select_multiple_testruns_by_suitename(self, suite_name) -> List[Testrun]:
         pass
 
     @abstractmethod
-    def select_stats_grouped_by_suitename(self, suite_name) -> list[TestPerfStats]:
+    def select_stats_grouped_by_suitename(self, suite_name) -> List[TestPerfStats]:
         pass
 
 

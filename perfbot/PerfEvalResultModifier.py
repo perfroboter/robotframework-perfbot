@@ -9,6 +9,7 @@ from PersistenceService import PersistenceService
 from Sqlite3PersistenceService import Sqlite3PersistenceService
 from PerfEvalVisualizer import PerfEvalVisualizer
 from model import JoinedPerfTestResult
+from typing import List
 
 # Constants
 DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS = 1.0 
@@ -28,7 +29,7 @@ class PerfEvalResultModifier(ResultVisitor):
     """
     ROBOT_LISTENER_API_VERSION = 2
     
-    perf_results_list_of_testsuite: list[JoinedPerfTestResult] = []
+    perf_results_list_of_testsuite: List[JoinedPerfTestResult] = []
 
 
 
@@ -68,7 +69,7 @@ class PerfEvalResultModifier(ResultVisitor):
             perf_stats = self.persistenceService.select_stats_grouped_by_suitename(suite.longname)
 
 
-            joined_test_results: list[JoinedPerfTestResult] = self._eval_perf_of_tests(suite.tests, perf_stats)
+            joined_test_results: List[JoinedPerfTestResult] = self._eval_perf_of_tests(suite.tests, perf_stats)
             text: str = self._get_perf_result_table(joined_test_results)
             
             self.perf_results_list_of_testsuite = joined_test_results
@@ -97,7 +98,7 @@ class PerfEvalResultModifier(ResultVisitor):
                     test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
 
 
-    def _eval_perf_of_tests(self, tests, perfstats) -> list[JoinedPerfTestResult]:
+    def _eval_perf_of_tests(self, tests, perfstats) -> List[JoinedPerfTestResult]:
         #TODO: Eval-by=avg
         joined_stat_results = []
         for t in tests: 
@@ -114,7 +115,7 @@ class PerfEvalResultModifier(ResultVisitor):
                 joined_stat_results.append(joined_test)
         return joined_stat_results
 
-    def _get_perf_result_table(self, joined_perf_result_list: list[JoinedPerfTestResult]):
+    def _get_perf_result_table(self, joined_perf_result_list: List[JoinedPerfTestResult]):
         text: str = TEXT_PERF_ANALYSIS_TABLE_HEADING
         for t in joined_perf_result_list:
             text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=t.elapsedtime,avg=f'{t.avg:.2f}' if t.avg is not None else "NO STATS",min=t.min if t.min is not None else "NO STATS",max=t.max if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")

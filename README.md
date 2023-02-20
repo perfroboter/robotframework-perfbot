@@ -9,7 +9,7 @@
 
 ## Installation
 
-Voraussetzung: `python` und `pip` ist installiert (empfohlene Version: Python 3.10.9, Mindestversion: 3.9)
+Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
 
 Repo klonen und folgenden Befehl ausführen: 
 ```bash
@@ -63,7 +63,7 @@ robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="ro
 Im Ordner `./example` sind Beispiel-Testfälle aus der Repo der Selenium-Library (entnommen aus https://github.com/robotframework/SeleniumLibrary)  abgelegt. Die Tests wurden mehrmals mit Perfbot ausgeführt. Ebenfalls dort sind die dazugehörige Datenbank `robot-exec-times.db` und die Robot-Testresults (`log.html` / `report.html`), in denen die Performance-Analyse berichtet wurde, zu finden. Mit folgenden Befehl lassen sich das Beispiel starten (Installation der SeleniumLibrary vorausgesetzt):
 ```bash
 # 1. Starten des System-under-Test (Login-Page)
-python -m example/sut/server.py
+python example/sut/server.py
 # 2. Ausführung der Tests inkl. Perfbot
 robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":boxplot=True:testbreaker=True --outputdir example example/tests
 ```

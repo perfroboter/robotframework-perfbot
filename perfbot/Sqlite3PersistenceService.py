@@ -2,6 +2,7 @@
 import sqlite3
 from PersistenceService import PersistenceService, Testrun, TestPerfStats
 from robot.result.model import TestCase, TestSuite
+from typing import List
 
 SQL_CREATE_TABLE_IF_NOT_EXISTS = "CREATE TABLE IF NOT EXISTS test_exec_times (id INTEGER, name TEXT NOT NULL, longname TEXT NOT NULL, starttime TEXT NOT NULL, elapsedTime INTEGER NOT NULL, status TEXT NOT NULL,PRIMARY KEY (id));"
 SQL_INSERT_TESTRUN = "INSERT INTO test_exec_times (name, longname, starttime, elapsedTime, status) VALUES (?, ?, ?, ?, ?)"
@@ -27,15 +28,15 @@ class Sqlite3PersistenceService(PersistenceService):
         self.cur.executemany(SQL_INSERT_TESTRUN, testruns)
         self.con.commit()
 
-    def select_testruns_by_testname(self, test_name, limit) -> list[Testrun]:
+    def select_testruns_by_testname(self, test_name, limit) -> List[Testrun]:
         raise NotImplementedError()
 
-    def select_multiple_testruns_by_suitename(self, suite_name) -> list[Testrun]:
+    def select_multiple_testruns_by_suitename(self, suite_name) -> List[Testrun]:
         self.cur.execute(SQL_SELECT_ALL_TESTRUNS_OF_TESTSUITE, (str(suite_name + "%"),))
 
         return self.cur.fetchall()
 
-    def select_stats_grouped_by_suitename(self, suite_name) -> list[TestPerfStats]:
+    def select_stats_grouped_by_suitename(self, suite_name) -> List[TestPerfStats]:
         self.cur.execute(SQL_SELECT_STATS_OF_TESTSUITE, (str(suite_name + "%"),))
         return self.cur.fetchall()
 
