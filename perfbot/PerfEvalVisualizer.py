@@ -4,12 +4,30 @@ from datetime import datetime
 import os, glob
 
 class PerfEvalVisualizer:
+    """Diese Klasse übernimmt die visuelle Aufbereitung von Performanzdaten der Testfälle.
+
+    :return: _description_
+    :rtype: _type_
+    """
     hasDeleted = False
 
     def __init__(self):
         pass
 
     def generate_boxplot_of_suite(self, hist_tests, act_tests):
+        #TODO: Einbindung von SVG's in HTML-Datei oder besseren Ablageort finden.
+        """generiert ein Boxplot bzw. ein Bild mit ggf. mehren Boxplots. 
+        Pro Testfall wird ein Boxplot gezeichnet und darin die aktuelle Testlaufzeit dargestellt.
+
+        Ältere Boxplots im temporären Ordner werden gelöscht.
+
+        :param hist_tests: Liste der historischen Testläufe der Testfälle
+        :type hist_tests: List[Testrun] (siehe model.py)
+        :param act_tests: Liste der aktuellen Testfälle
+        :type act_tests: 
+        :return: Pfad zur Bilddatei
+        :rtype: str
+        """
         df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedTime" , "status"])
         df["elapsedTime"] = df["elapsedTime"].astype(int)
         boxplot = df.boxplot(column=['elapsedTime'], by=['name'], fontsize=8, vert=False)
