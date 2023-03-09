@@ -1,9 +1,10 @@
 # see https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-532
 from robot.api import ResultVisitor
-from robot.api.logger import info, debug, trace, console
+from robot.api.logger import info, debug, trace, console   
 import json, os
 import sqlite3
 import time
+from datetime import datetime
 from robot.result.model import TestCase, TestSuite
 from PersistenceService import PersistenceService
 from Sqlite3PersistenceService import Sqlite3PersistenceService
@@ -14,9 +15,9 @@ from typing import List
 # Constants
 DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS = 1.0 
 DEFAULT_LAST_N_RUNS = None # TODO: Support limit
-DEFAULT_DATABASE_TECHNOLOGY = "sqlite3"
+DEFAULT_DATABASE_TECHNOLOGY = "sqlite3" #TODO: Support different persistence modes
 DEFAULT_DATABASE_PATH = "robot-exec-times.db"
-DEFAULT_STAT_FUNCTION = "avg"
+DEFAULT_STAT_FUNCTION = "avg" #TODO: Support different stat functions
 TEXT_PERF_ANALYSIS_TABLE_HEADING = "*Summary of Tests Performance*\n\n| =Testcase= |  =Elapsed=  | =Avg= | =Min= | =Max= | =Evaluated test runs= | =Deviation from avg= |\n"
 TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n" 
 TEXT_PERF_ANALYSIS_BOXPLOT = ""
@@ -32,6 +33,7 @@ class PerfEvalResultModifier(ResultVisitor):
     """
     ROBOT_LISTENER_API_VERSION = 2
 
+   
     perf_results_list_of_testsuite: List[JoinedPerfTestResult] = []
 
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
@@ -102,16 +104,29 @@ class PerfEvalResultModifier(ResultVisitor):
             
             self.perf_results_list_of_testsuite = joined_test_results
 
-            self.persistenceService.insert_multiple_testruns(suite.tests)
-
             # TODO: Refactor - Boxplot
             if self.boxplot_activated:
                 testruns = self.persistenceService.select_multiple_testruns_by_suitename(suite.longname)
-               
-                abs_filename = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
-                text+= "\n *Boxplot* \n\n file://" + abs_filename +""
+
+                if len(testruns) == 0:
+                    text+= "\n *Box-Plot* \n\n No historical data to generate the Boxplot"
+                else:
+                    abs_filename = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
+                    text+= "\n *Box-Plot* \n\n file://" + abs_filename +""
 
             suite.metadata["Performance Analysis"] = text
+
+    def end_suite(self, suite):
+        """Geerbte Methode aus robot.api.ResultVisitor wird an dieser Stelle überschrieben, 
+        um folgende Aktionen beim Aufruf jeder Testsuite durchzuführen:
+
+        - Wegschreiben der Ausführungsergebnisse aller Tests der Testsuite
+
+        :param suite: übergebene TestSuite inkl. aller Tests
+        :type suite: TestSuite (siehe robot.api)
+        """
+        if  not suite.suites:
+            self.persistenceService.insert_multiple_testruns(suite.tests)
 
 
     def visit_test(self, test):
@@ -172,5 +187,9 @@ class PerfEvalResultModifier(ResultVisitor):
         """
         text: str = TEXT_PERF_ANALYSIS_TABLE_HEADING
         for t in joined_perf_result_list:
-            text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=t.elapsedtime,avg=f'{t.avg:.2f}' if t.avg is not None else "NO STATS",min=t.min if t.min is not None else "NO STATS",max=t.max if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")
+            text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=self._format_time_string(t.elapsedtime),avg=self._format_time_string(t.avg) if t.avg is not None else "NO STATS",min=self._format_time_string(t.min) if t.min is not None else "NO STATS",max=self._format_time_string(t.max) if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")
         return text
+
+    def _format_time_string(self, val):
+        #TODO: Fix Time zone
+        return datetime.fromtimestamp(val / 1e3).strftime("%M:%S.%f")[:-3] + " ms"

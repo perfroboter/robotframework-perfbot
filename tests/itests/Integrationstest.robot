@@ -1,6 +1,6 @@
 *** Settings ***
 Suite Setup       Beispiel starten
-Documentation     Integrationstest zur Perfbot. Startet die Beispieltests und prüft die log.html und report.html
+Documentation     Integrationstest zur Perfbot. Startet die Beispieltests und prüft die log.html und report.html. Vorm Starten den Ablageort der LOG_HTML anpassen.
 Library           Process
 Library           SeleniumLibrary
 Library           OperatingSystem
@@ -16,7 +16,7 @@ ${RUN_ROBOT}    robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="te
 Perfbot im ersten Durchlauf testen
     Beispiel mit Robot testen
     Vorhandensein der Dateien pruefen
-    Log-Datei pruefen    testflauf_anzahl=NO STATS
+    Log-Datei pruefen    testflauf_anzahl=NO STATS    boxplot=False
 Perfbot im zweiten Durchlauf testen
     Beispiel mit Robot testen
     Vorhandensein der Dateien pruefen
@@ -37,7 +37,7 @@ Vorhandensein der Dateien pruefen
     File Should Exist    tests/integrationtests/temp/log.html
     File Should Exist    tests/integrationtests/temp/report.html
 Log-Datei pruefen
-    [Arguments]    ${logdatei}=${LOG_HTML}    ${metadata_feld}=Performance Analysis:    ${titel_in_tabelle}= Deviation from avg    ${erster_testfall}=Invalid Username    ${testflauf_anzahl}=1
+    [Arguments]    ${logdatei}=${LOG_HTML}    ${metadata_feld}=Performance Analysis:    ${titel_in_tabelle}= Deviation from avg    ${erster_testfall}=Invalid Username    ${testflauf_anzahl}=1    ${boxplot}=True
     Open Browser    ${logdatei}   ${BROWSER}
     Title Should Be    Tests Log
     Click Element    css:div#s1-s1
@@ -46,10 +46,13 @@ Log-Datei pruefen
     ${element}=    GetWebElement    locator=xpath://*[@id="s1-s1"]/div[2]/table/tbody/tr[3]/td/table
     Element Should Contain    ${element}    ${titel_in_tabelle}
     Table Cell Should Contain    locator=${element}   row=2    column=1    expected=${erster_testfall}
-    Table Cell Should Contain    locator=${element}   row=2    column=6    expected=${testflauf_anzahl}      
-    Click Image    //*[@id="s1-s1"]/div[2]/table/tbody/tr[3]/td/p[3]/img
-    ${boxplot}=    Get Element Attribute    //*[@id="s1-s1"]/div[2]/table/tbody/tr[3]/td/p[3]/img    src
-    Log            Boxplot saved under: ${boxplot}
+    Table Cell Should Contain    locator=${element}   row=2    column=6    expected=${testflauf_anzahl}
+    IF    ${boxplot}      
+        Click Image    //*[@id="s1-s1"]/div[2]/table/tbody/tr[3]/td/p[3]/img
+        ${pic}=    Get Element Attribute    //*[@id="s1-s1"]/div[2]/table/tbody/tr[3]/td/p[3]/img    src
+        Log            Boxplot saved under: ${pic}
+    END
+ #   [Teardown]    Close Browser
 Aufraeumen
     Terminate All Processes    kill=True
     Remove Directory    tests/integrationtests/temp    recursive=True
