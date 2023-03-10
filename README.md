@@ -36,13 +36,13 @@ Starten der Robot-Testfälle inkl. perfbot (standardmäßig mit Box-Plot-Modus u
 robot --prerebotmodifier perfbot/perfbot.py [path to tests]
 ```
 
-Angabe, welche Sqlite3-Datenbank mit archiverten Testlaufzeiten genutzt werden soll (standardmäßig wird eine Datenbank mit dem Namen `robot-exec-times.db` erzeugt bzw. verwendet):
+Angabe, welche [Sqlite3-Datenbank](https://docs.python.org/3/library/sqlite3.html) mit archiverten Testlaufzeiten genutzt werden soll (standardmäßig wird eine Datenbank mit dem Namen `robot-exec-times.db` erzeugt bzw. verwendet):
 ```bash
 robot --prerebotmodifier perfbot/perfbot.py:db_path=[path to sqlite3 file] [path to tests]
 ```
 
 Aktivierung des Testbreaker-Modus:  
-Beispiel: Bei einer Abweichung (`devn`) der Testlaufzeit von 10% vom Durchschnitt der vergangen Testläufe soll der Testfall auf FAIL gesetzt werden.
+Beispiel: Bei einer Abweichung (`devn`) der Testlaufzeit von 10% vom Durchschnitt der vergangen Testläufe soll der Testfall auf FAIL gesetzt werden. (Hinweis: Perfbot läuft im Rebot-Schritt, die `output.xml` und CLI-Ausgaben werden durch den Testbreaker deshalb nicht verändert)
 ```bash
 robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:testbreaker=True [path to tests]
 ```
@@ -59,13 +59,23 @@ Hinweis zum Entwicklungsstand: Nicht zu alle Parameter sind andere Werte als die
 robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="robot-exec-times.db":boxplot=True:testbreaker=True [path to tests]
 ```
 
+Ausführen von Perfbot mittels `rebot`:
+Die `log.html` und `report.html` von Robot-Testfällen können auch ohne Testausführung basierend auf der `output.xml`.
+D. h. Perfbot kann nachträglich ohne Ausführung der Tests gestartet werden.
+Dazu ist eine bestehende `output.xml` nötig. Bei der Ausführung von Perfbot mittes `rebot` kann neben den HTML-Dokumenten auch eine neue  `output.xml` erzeugt werden, die dann auch den fehlgeschlagene Tests des Testbreaker enthält.
+Hinweis zum Entwicklungsstand: Bisher führt jede Ausführung von Perfbot zu neuen Datensätzen, doppelte Ausführungen zu gleichen Testdurchläufen sollte deshalb vermieden werden.
+```bash
+# Vgl. untenstehendes Beispiel
+rebot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True --output example/newoutput.xml example/output.xml
+```
+
 ## Beispiel Login-Page
 Im Ordner `./example` sind Beispiel-Testfälle aus der Repo der Selenium-Library (entnommen aus https://github.com/robotframework/SeleniumLibrary)  abgelegt. Die Tests wurden mehrmals mit Perfbot ausgeführt. Ebenfalls dort sind die dazugehörige Datenbank `robot-exec-times.db` und die Robot-Testresults (`log.html` / `report.html`), in denen die Performance-Analyse berichtet wurde, zu finden. Mit folgenden Befehl lassen sich das Beispiel starten (Installation der SeleniumLibrary vorausgesetzt):
 ```bash
 # 1. Starten des System-under-Test (Login-Page)
 python example/sut/server.py
 # 2. Ausführung der Tests inkl. Perfbot
-robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":boxplot=True:testbreaker=True --outputdir example example/tests
+robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True --outputdir example example/tests
 ```
 Screenshot 1: Einbindung der Performance-Analyse in die Log-Dateiund die Funktionsweise der Testbreakers aussehen sollen:
 ![](res/example-test-suite-summary.png)
