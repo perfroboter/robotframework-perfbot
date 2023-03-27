@@ -17,6 +17,7 @@ DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS = 1.0
 DEFAULT_LAST_N_RUNS = None # TODO: Support limit
 DEFAULT_DATABASE_TECHNOLOGY = "sqlite3" #TODO: Support different persistence modes
 DEFAULT_DATABASE_PATH = "robot-exec-times.db"
+DEFAULT_BOXPLOT_FOLDER_REL_PATH = "perfbot-graphics/"
 DEFAULT_STAT_FUNCTION = "avg" #TODO: Support different stat functions
 TEXT_PERF_ANALYSIS_TABLE_HEADING = "*Summary of Tests Performance*\n\n| =Testcase= |  =Elapsed=  | =Avg= | =Min= | =Max= | =Evaluated test runs= | =Deviation from avg= |\n"
 TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n" 
@@ -39,7 +40,7 @@ class PerfEvalResultModifier(ResultVisitor):
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
         devn: float=DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS, last_n_runs: int=DEFAULT_LAST_N_RUNS, db: str=DEFAULT_DATABASE_TECHNOLOGY,
-       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, testbreaker:bool=False):
+       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, boxplot_folder: str=DEFAULT_BOXPLOT_FOLDER_REL_PATH, testbreaker:bool=False):
         """Es sind keine Parameter für den Aufruf nötig. Es lässt sich aber eine Vielzahl von Einstellung über folgende Parameter vornehmen:
 
         :param stat_func: Angabe, welche statistische Funktion zur Auswertung genutzt wird, defaults to DEFAULT_STAT_FUNCTION
@@ -76,7 +77,7 @@ class PerfEvalResultModifier(ResultVisitor):
 
         self.boxplot_activated = boxplot
         if  self.boxplot_activated:
-            self.visualizer = PerfEvalVisualizer()
+            self.visualizer = PerfEvalVisualizer(boxplot_folder)
         else:
             self.visualizer = None
 
@@ -111,8 +112,8 @@ class PerfEvalResultModifier(ResultVisitor):
                 if len(testruns) == 0:
                     text+= "\n *Box-Plot* \n\n No historical data to generate the Boxplot"
                 else:
-                    abs_filename = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
-                    text+= "\n *Box-Plot* \n\n file://" + abs_filename +""
+                    rel_path_boxplot = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
+                    text+= "\n *Box-Plot* \n\n  ["+ rel_path_boxplot + "| Boxplot ]"
 
             suite.metadata["Performance Analysis"] = text
 

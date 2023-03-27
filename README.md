@@ -56,7 +56,7 @@ robot --prerebotmodifier perfbot/perfbot.py:boxplot=False [path to tests]
 Ausführung von Perfbot mit allen möglichen Parameter:
 Hinweis zum Entwicklungsstand: Nicht zu alle Parameter sind andere Werte als die Defaults auswählbar. 
 ```bash
-robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="robot-exec-times.db":boxplot=True:testbreaker=True [path to tests]
+robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="example/robot-exec-times.db":boxplot=True:boxplot_folder="perfbot-graphics/":testbreaker=True [path to tests]
 ```
 
 Ausführen von Perfbot mittels `rebot`:
