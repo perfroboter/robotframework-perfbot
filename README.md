@@ -85,7 +85,7 @@ Screenshot 2: Testbreaker in Aktion am Beispiel des Beispiels Login-Page
 
 ## Technische Dokumentation 
 
-Für weitere Details u. a. den architektonischen Aufbau siehe [DOCS.md](DOCS.md).
+Für weitere Details u. a. den architektonischen Aufbau siehe [ARC42_DOC.md](ARC42_DOC.md).
 
 ## Quellen
 Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgeriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgendenen eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
