@@ -66,5 +66,11 @@ class PersistenceService:
         """
         pass
 
-
+    @abstractmethod
+    def select_keyword_stats_grouped_by_run_order(self, suite_name):
+        pass
+    
+    @abstractmethod
+    def select_global_keywords_stats_by_suitename(self, suite_name):
+        pass
 

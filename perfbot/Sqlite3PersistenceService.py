@@ -12,6 +12,9 @@ SQL_INSERT_KEYWORDS = "INSERT INTO keyword_exec_times (name, longname, testcase_
 SQL_SELECT_STATS_OF_TESTSUITE = "SELECT name, longname, AVG(elapsedTime) as avg, MIN(elapsedTime) as min, MAX(elapsedTime) as max, count(elapsedTime) as count FROM (SELECT name, longname, elapsedTime FROM test_exec_times WHERE longname like ? AND status='PASS') AS TEMP GROUP BY longname;"
 SQL_SELECT_ALL_TESTRUNS_OF_TESTSUITE = "SELECT * FROM test_exec_times WHERE longname like ? "
 
+SQL_SELECT_STATS_OF_POSITIONAL_KEYWORDS = "SELECT name, longname, testcase_longname, parent_keyword_longname, libname, keyword_level, counter, avg(elapsedTime) as avg, min(elapsedTime) as min, max(elapsedTime) as max, count(elapsedTime) as count 	FROM keyword_exec_times WHERE testcase_longname like ? GROUP BY Testcase_longname, Longname, counter;"
+SQL_SELECT_GLOBAL_KEYWORDS_STATS = "SELECT name, longname, testcase_longname, libname, avg(elapsedTime) as avg, min(elapsedTime) as min, max(elapsedTime) as max, count(elapsedTime) as count 	FROM keyword_exec_times WHERE testcase_longname like ? GROUP BY Longname;"
+
 class Sqlite3PersistenceService(PersistenceService):
     """Persistierung der Testergebnisse erfolgt in einer lokalen Sqlite3-Datei.
 
@@ -50,6 +53,15 @@ class Sqlite3PersistenceService(PersistenceService):
     def select_stats_grouped_by_suitename(self, suite_name) -> List[TestPerfStats]:
         self.cur.execute(SQL_SELECT_STATS_OF_TESTSUITE, (str(suite_name + "%"),))
         return self.cur.fetchall()
+
+    def select_keyword_stats_grouped_by_run_order(self, suite_name):
+        self.cur.execute(SQL_SELECT_STATS_OF_POSITIONAL_KEYWORDS, (str(suite_name + "%"),))
+        return self.cur.fetchall()
+    
+    def select_global_keywords_stats_by_suitename(self, suite_name):
+        self.cur.execute(SQL_SELECT_GLOBAL_KEYWORDS_STATS, (str(suite_name + "%"),))
+        return self.cur.fetchall()
+
 
 
 

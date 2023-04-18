@@ -117,6 +117,10 @@ class PerfEvalResultModifier(ResultVisitor):
                     rel_path_boxplot = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
                     text+= "\n *Box-Plot* \n\n  ["+ rel_path_boxplot + "| Boxplot ]"
 
+                text+= "\n Keyword Run-Order\n" + str(self.persistenceService.select_keyword_stats_grouped_by_run_order(suite.longname))
+
+                text+= "\n Keyword Global\n" + str(self.persistenceService.select_global_keywords_stats_by_suitename(suite.longname))
+
             suite.metadata["Performance Analysis"] = text
 
     def end_suite(self, suite):
@@ -141,7 +145,7 @@ class PerfEvalResultModifier(ResultVisitor):
 
     def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, stoplevel=None):
         if isinstance(bodyItem,Keyword):
-            self.body_items_of_testsuite.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,-1))
+            self.body_items_of_testsuite.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,-2))
             for children in bodyItem.body:
                 level+=1
                 self._recursive_keywords_traversal(children,testcase_longname,level)

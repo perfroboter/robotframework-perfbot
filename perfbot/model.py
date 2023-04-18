@@ -65,6 +65,12 @@ class   Keywordrun(NamedTuple):
     status: any
     keyword_level: int
     counter: int
+
+class Keywordrun_stats(Keywordrun):
+    avg: any
+    min: any
+    max: any
+    count: any
     
 class StoredTestrun(Testrun):
     id: any
