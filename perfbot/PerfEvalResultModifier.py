@@ -5,11 +5,11 @@ import json, os
 import sqlite3
 import time
 from datetime import datetime
-from robot.result.model import TestCase, TestSuite
+from robot.result.model import TestCase, TestSuite, Body, Keyword
 from PersistenceService import PersistenceService
 from Sqlite3PersistenceService import Sqlite3PersistenceService
 from PerfEvalVisualizer import PerfEvalVisualizer
-from model import JoinedPerfTestResult
+from model import JoinedPerfTestResult, Keywordrun
 from typing import List
 
 # Constants
@@ -36,6 +36,8 @@ class PerfEvalResultModifier(ResultVisitor):
 
    
     perf_results_list_of_testsuite: List[JoinedPerfTestResult] = []
+
+    body_items_of_testsuite = []
 
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
@@ -128,6 +130,22 @@ class PerfEvalResultModifier(ResultVisitor):
         """
         if  not suite.suites:
             self.persistenceService.insert_multiple_testruns(suite.tests)
+            self.body_items_of_testsuite = []
+            for test in suite.tests:
+                for bodyItem in test.body:
+                    print(type(bodyItem))
+                    if isinstance(bodyItem,Keyword):
+                        self._recursive_keywords_traversal(bodyItem,test.longname,1)
+                print("Liste der Keywords von " + test.name + " Length: " + str(len(self.body_items_of_testsuite)))
+            self.persistenceService.insert_multiple_keywords(self.body_items_of_testsuite)
+
+    def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, stoplevel=None):
+        if isinstance(bodyItem,Keyword):
+            self.body_items_of_testsuite.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,-1))
+            for children in bodyItem.body:
+                level+=1
+                self._recursive_keywords_traversal(children,testcase_longname,level)
+
 
 
     def visit_test(self, test):

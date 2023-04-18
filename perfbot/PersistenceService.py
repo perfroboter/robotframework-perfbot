@@ -26,6 +26,10 @@ class PersistenceService:
         :type tests: Liste von TestCase(s) (siehe robot.result.model)
         """
         pass
+    
+    @abstractmethod
+    def insert_multiple_keywords(self, keywords):
+        pass
 
     @abstractmethod
     def select_testruns_by_testname(self, test_name, limit) -> List[StoredTestrun]:
