@@ -42,7 +42,7 @@ class PerfEvalResultModifier(ResultVisitor):
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
         devn: float=DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS, last_n_runs: int=DEFAULT_LAST_N_RUNS, db: str=DEFAULT_DATABASE_TECHNOLOGY,
-       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, boxplot_folder: str=DEFAULT_BOXPLOT_FOLDER_REL_PATH, testbreaker:bool=False):
+       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, boxplot_folder: str=DEFAULT_BOXPLOT_FOLDER_REL_PATH, testbreaker:bool=False, readonly=False, keywordstats=False):
         """Es sind keine Parameter für den Aufruf nötig. Es lässt sich aber eine Vielzahl von Einstellung über folgende Parameter vornehmen:
 
         :param stat_func: Angabe, welche statistische Funktion zur Auswertung genutzt wird, defaults to DEFAULT_STAT_FUNCTION
@@ -84,6 +84,8 @@ class PerfEvalResultModifier(ResultVisitor):
             self.visualizer = None
 
         self.testbreaker_activated = testbreaker
+        self.readonly = readonly
+        self.keywordstats = keywordstats
 
 
 
@@ -132,23 +134,9 @@ class PerfEvalResultModifier(ResultVisitor):
         :param suite: übergebene TestSuite inkl. aller Tests
         :type suite: TestSuite (siehe robot.api)
         """
-        if  not suite.suites:
+        if  not suite.suites and not self.readonly:
             self.persistenceService.insert_multiple_testruns(suite.tests)
-            self.body_items_of_testsuite = []
-            for test in suite.tests:
-                for bodyItem in test.body:
-                    print(type(bodyItem))
-                    if isinstance(bodyItem,Keyword):
-                        self._recursive_keywords_traversal(bodyItem,test.longname,1)
-                print("Liste der Keywords von " + test.name + " Length: " + str(len(self.body_items_of_testsuite)))
-            self.persistenceService.insert_multiple_keywords(self.body_items_of_testsuite)
 
-    def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, stoplevel=None):
-        if isinstance(bodyItem,Keyword):
-            self.body_items_of_testsuite.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,-2))
-            for children in bodyItem.body:
-                level+=1
-                self._recursive_keywords_traversal(children,testcase_longname,level)
 
 
 
@@ -159,7 +147,6 @@ class PerfEvalResultModifier(ResultVisitor):
         :param test: übergebener Testfall
         :type test: TestCase (siehe robot.api)
         """
-
         if self.testbreaker_activated:
             for perf_result in self.perf_results_list_of_testsuite:
                 if perf_result.longname == test.longname:
@@ -170,6 +157,27 @@ class PerfEvalResultModifier(ResultVisitor):
                     old_test_status = test.status
                     test.status = 'FAIL'
                     test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
+
+        if not self.readonly and self.keywordstats:
+            print(True)
+            self.body_items_of_test= []
+            counter = 0
+            for bodyItem in test.body:
+                if isinstance(bodyItem,Keyword):
+                    #counter+=1
+                    self._recursive_keywords_traversal(bodyItem,test.longname,0, counter)
+            self.persistenceService.insert_multiple_keywordruns(self.body_items_of_test)
+
+      
+    def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, counter: int, stoplevel=None):
+        
+        if isinstance(bodyItem,Keyword):
+            level+=1
+            counter+=1
+            self.body_items_of_test.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,counter))
+            for children in bodyItem.body:
+                counter = self._recursive_keywords_traversal(children,testcase_longname,level, counter)
+        return counter
 
 
     def _eval_perf_of_tests(self, tests, perfstats) -> List[JoinedPerfTestResult]:

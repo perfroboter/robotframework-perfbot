@@ -28,7 +28,7 @@ class PersistenceService:
         pass
     
     @abstractmethod
-    def insert_multiple_keywords(self, keywords):
+    def insert_multiple_keywordruns(self, keywordruns):
         pass
 
     @abstractmethod

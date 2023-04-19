@@ -38,8 +38,8 @@ class Sqlite3PersistenceService(PersistenceService):
         self.cur.executemany(SQL_INSERT_TESTRUN, testruns)
         self.con.commit()
 
-    def insert_multiple_keywords(self, keywords: List[Keywordrun]):
-        self.cur.executemany(SQL_INSERT_KEYWORDS, keywords)
+    def insert_multiple_keywordruns(self, keywordruns: List[Keywordrun]):
+        self.cur.executemany(SQL_INSERT_KEYWORDS, keywordruns)
         self.con.commit()
 
     def select_testruns_by_testname(self, test_name, limit) -> List[StoredTestrun]:
