@@ -26,9 +26,9 @@ class PerfEvalVisualizer:
         :return: Pfad zur Bilddatei
         :rtype: str
         """
-        df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedTime" , "status"])
-        df["elapsedTime"] = df["elapsedTime"].astype(int)
-        boxplot = df.boxplot(column=['elapsedTime'], by=['name'], fontsize=8, vert=False)
+        df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"])
+        df["elapsedtime"] = df["elapsedtime"].astype(int)
+        boxplot = df.boxplot(column=['elapsedtime'], by=['name'], fontsize=8, vert=False)
 
         boxplot.set_xlabel("Elapsed time in ms")
         boxplot.set_ylabel("Testcases")

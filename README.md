@@ -56,7 +56,7 @@ robot --prerebotmodifier perfbot/perfbot.py:boxplot=False [path to tests]
 Ausführung von Perfbot mit allen möglichen Parameter:
 Hinweis zum Entwicklungsstand: Nicht zu alle Parameter sind andere Werte als die Defaults auswählbar. 
 ```bash
-robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="example/robot-exec-times.db":boxplot=True:boxplot_folder="perfbot-graphics/":testbreaker=True [path to tests]
+robot --prerebotmodifier perfbot/perfbot.py:stat_func='avg':devn=0.1:db_path="example/robot-exec-times.db":boxplot=True:boxplot_folder="perfbot-graphics/":testbreaker=True:keywordstats="False":readonly="False" [path to tests]
 ```
 
 Ausführen von Perfbot mittels `rebot`:
@@ -75,7 +75,7 @@ Im Ordner `./example` sind Beispiel-Testfälle aus der Repo der Selenium-Library
 # 1. Starten des System-under-Test (Login-Page)
 python example/sut/server.py
 # 2. Ausführung der Tests inkl. Perfbot
-robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True --outputdir example example/tests
+robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True:keywordstats="True" example/tests
 ```
 Screenshot 1: Einbindung der Performance-Analyse in die Log-Dateiund die Funktionsweise der Testbreakers aussehen sollen:
 ![](res/example-test-suite-summary.png)

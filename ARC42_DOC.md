@@ -265,7 +265,7 @@ Die technischen Schulden der jeweiligen Entscheidungen sind bei den Architekture
 
 Begriff     | Definition
 ------------|-----------------------
--           | -
+ -/-         | -/-
 
 # Quellen
 

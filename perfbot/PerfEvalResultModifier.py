@@ -87,6 +87,9 @@ class PerfEvalResultModifier(ResultVisitor):
         self.readonly = readonly
         self.keywordstats = keywordstats
 
+        if not self.readonly:
+            self.persistenceService.insert_test_execution(os.uname()[1])
+
 
 
     def start_suite(self, suite: TestSuite):
@@ -102,7 +105,7 @@ class PerfEvalResultModifier(ResultVisitor):
         :type suite: TestSuite (siehe robot.api)
         """
         if  not suite.suites:
-            perf_stats = self.persistenceService.select_stats_grouped_by_suitename(suite.longname)
+            perf_stats = self.persistenceService.select_testcase_stats_filtered_by_suitename(suite.longname)
 
             joined_test_results: List[JoinedPerfTestResult] = self._eval_perf_of_tests(suite.tests, perf_stats)
             text: str = self._get_perf_result_table(joined_test_results)
@@ -111,7 +114,8 @@ class PerfEvalResultModifier(ResultVisitor):
 
             # TODO: Refactor - Boxplot
             if self.boxplot_activated:
-                testruns = self.persistenceService.select_multiple_testruns_by_suitename(suite.longname)
+                testruns = self.persistenceService.select_testcase_runs_filtered_by_suitename(suite.longname)
+              #  testruns = self.persistenceService.select_multiple_testruns_by_suitename(suite.longname)
 
                 if len(testruns) == 0:
                     text+= "\n *Box-Plot* \n\n No historical data to generate the Boxplot"
@@ -119,25 +123,11 @@ class PerfEvalResultModifier(ResultVisitor):
                     rel_path_boxplot = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
                     text+= "\n *Box-Plot* \n\n  ["+ rel_path_boxplot + "| Boxplot ]"
 
-                text+= "\n Keyword Run-Order\n" + str(self.persistenceService.select_keyword_stats_grouped_by_run_order(suite.longname))
-
-                text+= "\n Keyword Global\n" + str(self.persistenceService.select_global_keywords_stats_by_suitename(suite.longname))
 
             suite.metadata["Performance Analysis"] = text
 
-    def end_suite(self, suite):
-        """Geerbte Methode aus robot.api.ResultVisitor wird an dieser Stelle überschrieben, 
-        um folgende Aktionen beim Aufruf jeder Testsuite durchzuführen:
-
-        - Wegschreiben der Ausführungsergebnisse aller Tests der Testsuite
-
-        :param suite: übergebene TestSuite inkl. aller Tests
-        :type suite: TestSuite (siehe robot.api)
-        """
-        if  not suite.suites and not self.readonly:
-            self.persistenceService.insert_multiple_testruns(suite.tests)
-
-
+            if  not suite.suites and not self.readonly:
+                self.persistenceService.insert_multiple_testcase_runs(suite.tests)
 
 
     def visit_test(self, test):
@@ -166,7 +156,8 @@ class PerfEvalResultModifier(ResultVisitor):
                 if isinstance(bodyItem,Keyword):
                     #counter+=1
                     self._recursive_keywords_traversal(bodyItem,test.longname,0, counter)
-            self.persistenceService.insert_multiple_keywordruns(self.body_items_of_test)
+            self.persistenceService.insert_multiple_keyword_runs(self.body_items_of_test)
+          #  self.persistenceService.insert_multiple_keywordruns(self.body_items_of_test)
 
       
     def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, counter: int, stoplevel=None):
@@ -223,4 +214,5 @@ class PerfEvalResultModifier(ResultVisitor):
 
     def _format_time_string(self, val):
         #TODO: Fix Time zone
-        return datetime.fromtimestamp(val / 1e3).strftime("%M:%S.%f")[:-3] + " ms"
+        #return datetime.fromtimestamp(val / 1e3).strftime("%M:%S.%f")[:-3] + " ms"
+        return val
