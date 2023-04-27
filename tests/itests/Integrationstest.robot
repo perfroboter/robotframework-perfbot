@@ -4,12 +4,12 @@ Documentation     Integrationstest zur Perfbot. Startet die Beispieltests und pr
 Library           Process
 Library           SeleniumLibrary
 Library           OperatingSystem
-Suite Teardown    Aufraeumen
+# Suite Teardown    Aufraeumen
 
 *** Variables ***
 ${BROWSER}      Chrome
 ${START_SUT}    python3 example/sut/server.py
-${RUN_ROBOT}    robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="tests/itests/temp/test.db":boxplot=True:testbreaker=True --outputdir tests/itests/temp example/tests
+${RUN_ROBOT}    robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="tests/itests/temp/test.db":boxplot=True:testbreaker=True:boxplot_folder="tests/itests/temp/" --outputdir tests/itests/temp example/tests
 
 *** Test Cases ***
 Perfbot im ersten Durchlauf testen
@@ -36,6 +36,7 @@ Vorbereiten
     Remove Directory    tests/itests/temp    recursive=True
     Beispiel SUT starten
     ${pwd}=	Run Process    pwd    shell=yes
+    Log    pwd: ${pwd.stdout}
     Set Global Variable    ${LOG_HTML}    file://${pwd.stdout}/tests/itests/temp/log.html
     Log    Ablageort der LOG-HTML ermittelt: ${LOG_HTML}
 Beispiel SUT starten

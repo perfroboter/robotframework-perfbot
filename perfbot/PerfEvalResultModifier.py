@@ -105,22 +105,20 @@ class PerfEvalResultModifier(ResultVisitor):
         :type suite: TestSuite (siehe robot.api)
         """
         if  not suite.suites:
-            perf_stats = self.persistenceService.select_testcase_stats_filtered_by_suitename(suite.longname)
+            testcase_perf_stats = self.persistenceService.select_testcase_stats_filtered_by_suitename(suite.longname)
 
-            joined_test_results: List[JoinedPerfTestResult] = self._eval_perf_of_tests(suite.tests, perf_stats)
+            joined_test_results: List[JoinedPerfTestResult] = self._eval_perf_of_tests(suite.tests, testcase_perf_stats)
             text: str = self._get_perf_result_table(joined_test_results)
             
             self.perf_results_list_of_testsuite = joined_test_results
 
-            # TODO: Refactor - Boxplot
             if self.boxplot_activated:
                 testruns = self.persistenceService.select_testcase_runs_filtered_by_suitename(suite.longname)
-              #  testruns = self.persistenceService.select_multiple_testruns_by_suitename(suite.longname)
 
                 if len(testruns) == 0:
                     text+= "\n *Box-Plot* \n\n No historical data to generate the Boxplot"
                 else:
-                    rel_path_boxplot = self.visualizer.generate_boxplot_of_suite(testruns,suite.tests)
+                    rel_path_boxplot = self.visualizer.generate_boxplot_of_tests(testruns,suite.tests)
                     text+= "\n *Box-Plot* \n\n  ["+ rel_path_boxplot + "| Boxplot ]"
 
 
@@ -149,15 +147,19 @@ class PerfEvalResultModifier(ResultVisitor):
                     test.message = "PerfError: Test run lasted " + f'{calced_devn:.2f}' + " % than the average runs in the past and is thus above the maximum threshold of " + f'{self.max_deviation*100:.2f}' + " % (original test status was "+ str(old_test_status) + ")."
 
         if not self.readonly and self.keywordstats:
-            print(True)
             self.body_items_of_test= []
             counter = 0
+            if test.setup:
+                counter = self._recursive_keywords_traversal(test.setup,test.longname,0, counter)
+
             for bodyItem in test.body:
                 if isinstance(bodyItem,Keyword):
-                    #counter+=1
-                    self._recursive_keywords_traversal(bodyItem,test.longname,0, counter)
+                    counter = self._recursive_keywords_traversal(bodyItem,test.longname,0, counter)
+            if test.teardown:
+                counter = self._recursive_keywords_traversal(test.teardown,test.longname,0, counter)
+
+  
             self.persistenceService.insert_multiple_keyword_runs(self.body_items_of_test)
-          #  self.persistenceService.insert_multiple_keywordruns(self.body_items_of_test)
 
       
     def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, counter: int, stoplevel=None):
@@ -165,7 +167,12 @@ class PerfEvalResultModifier(ResultVisitor):
         if isinstance(bodyItem,Keyword):
             level+=1
             counter+=1
-            self.body_items_of_test.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname,"TODO",bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,counter))
+            if isinstance(bodyItem.parent, Keyword):
+                parentname = bodyItem.parent.kwname
+            else:
+                parentname = "NO KEYWORD"
+
+            self.body_items_of_test.append(Keywordrun(bodyItem.kwname,bodyItem.name,testcase_longname, parentname,bodyItem.libname,str(bodyItem.starttime),str(bodyItem.elapsedtime),bodyItem.status,level,counter))
             for children in bodyItem.body:
                 counter = self._recursive_keywords_traversal(children,testcase_longname,level, counter)
         return counter
@@ -213,6 +220,4 @@ class PerfEvalResultModifier(ResultVisitor):
         return text
 
     def _format_time_string(self, val):
-        #TODO: Fix Time zone
-        #return datetime.fromtimestamp(val / 1e3).strftime("%M:%S.%f")[:-3] + " ms"
-        return val
+        return datetime.fromtimestamp(int(val) / 1e3).strftime("%M:%S.%f")[:-3]
