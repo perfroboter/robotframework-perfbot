@@ -6,10 +6,10 @@ import sqlite3
 import time
 from datetime import datetime
 from robot.result.model import TestCase, TestSuite, Body, Keyword
-from PersistenceService import PersistenceService
-from Sqlite3PersistenceService import Sqlite3PersistenceService
-from PerfEvalVisualizer import PerfEvalVisualizer
-from model import JoinedPerfTestResult, Keywordrun
+from .PersistenceService import PersistenceService
+from .Sqlite3PersistenceService import Sqlite3PersistenceService
+from .PerfEvalVisualizer import PerfEvalVisualizer
+from .model import JoinedPerfTestResult, Keywordrun
 from typing import List
 
 # Constants

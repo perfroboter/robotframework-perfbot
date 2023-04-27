@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
-import io, time
+import io
 from pathlib import Path
 import seaborn as sns
 
@@ -43,6 +43,8 @@ class PerfEvalVisualizer:
         
         sns.stripplot(ax=boxplot,x=x, y=y, data=hist, color="grey")
 
+        # Die Makierung der aktuellen Laufzeiten funktioniert nicht bzw. irgendwie werden die Figures dann doppelt referenziert...
+        # Fehler gefunden: Timestamp %f wird nicht ausgefüllt
         if True:
             act = pd.DataFrame(act_results, copy=True)
             act[x] = act[x].astype(int) / 1000
@@ -57,12 +59,13 @@ class PerfEvalVisualizer:
 
             case "png":
                 Path(self.boxplot_folder).mkdir(parents=True, exist_ok=True)
-                pathname  = self.boxplot_folder + "boxplot" + time.strftime("-%m-%d-%Y-%H-%M-%S-%f") + ".png"
+                pathname  = self.boxplot_folder + "boxplot" + datetime.now().strftime("-%m-%d-%Y-%H-%M-%S-%f") + ".png"
                 try:
                     plt.savefig(pathname, bbox_inches="tight")
                     plt.clf()
                 except:
                     print("An execption occured")
+                print("Boxplot generiert: " + pathname)
                 return pathname
             case _:
                 raise KeyError("Wrong Format of Boxplot generation.")   

@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABCMeta
 from robot.result.model import TestCase
-from model import *
+from .model import *
 from typing import List
 
 class PersistenceService:

@@ -1,5 +1,5 @@
 import unittest
-from Sqlite3PersistenceService import *
+from .Sqlite3PersistenceService import *
 import os, glob
 from robot.result import ExecutionResult
 

@@ -7,6 +7,13 @@
 
 **Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Es erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse werden in die Robot-Testresults (`log.html` / `report.html`) integriert.
 
+## Neues
+```bash
+# Ausführung über setup.py
+python3 setup.py install
+python3 -m robot --prerebotmodifier perfbot.perfbot:db_path="example/robot-exec-times.db:"keywordstats="True" example/tests
+```
+
 ## Installation
 
 Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
