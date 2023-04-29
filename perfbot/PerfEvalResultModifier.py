@@ -42,7 +42,7 @@ class PerfEvalResultModifier(ResultVisitor):
     #TODO: Globales und Suite-Timeout aus Testfällen berücksichtigen
     def __init__(self, stat_func: str=DEFAULT_STAT_FUNCTION, 
         devn: float=DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS, last_n_runs: int=DEFAULT_LAST_N_RUNS, db: str=DEFAULT_DATABASE_TECHNOLOGY,
-       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, boxplot_folder: str=DEFAULT_BOXPLOT_FOLDER_REL_PATH, testbreaker:bool=False, readonly=False, keywordstats=False):
+       db_path: str=DEFAULT_DATABASE_PATH, boxplot: bool=True, boxplot_folder: str=DEFAULT_BOXPLOT_FOLDER_REL_PATH, testbreaker:bool=False, readonly=False, keywordstats:bool=True):
         """Es sind keine Parameter für den Aufruf nötig. Es lässt sich aber eine Vielzahl von Einstellung über folgende Parameter vornehmen:
 
         :param stat_func: Angabe, welche statistische Funktion zur Auswertung genutzt wird, defaults to DEFAULT_STAT_FUNCTION
