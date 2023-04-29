@@ -28,7 +28,7 @@ Der Integrationstest im Sinne eines Smoke-Tests führt die Robot-Testfälle des 
 Dabei werden drei Durchläufe gemacht, um sowohl die initale Anlage der Datenbank, als auch den Rückgriff auf historischen Daten zu prüfen.
 
 ```bash
-# Ausführung aus Root-Ordner des Repos
-python example/sut/server.py #SUT vorher starten 
- 
+# Ausführung aus Root-Ordner des Repos, damit Pfade im Skript korrekt sind
+# Hinweis im Skript wird Robot mit dem Befehl python3 -m robot gestartet
+python3 -m robot -o itest-output.xml -l itest-log.html -r itest-report.html tests/itests/Integrationstest.robot
 ```
