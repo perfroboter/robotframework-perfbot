@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 setup(
       name='robotframework-perfbot',
       version="0.0.1",
-      description='Performance Analysis for robot framework',
-      long_description='Performance Analysis for robot framework',
+      description='Performance Analysis for Robot Framework',
+      long_description='Performance Analysis for Robot Framework',
       classifiers=[
           'Framework :: Robot Framework',
           'Programming Language :: Python',
@@ -12,8 +12,8 @@ setup(
       ],
       keywords='robotframework performance',
       author='Lennart Potthoff',
-      author_email='adiralashiva8@gmail.com',
-      url='https://github.com/adiralashiva8/robotframework-metrics',
+      author_email='git@circuit-break.in',
+      url='https://git.fh-muenster.de/lennarts-master-thesis/robot-execution-time',
       license='MIT',
       
       packages=find_packages(),
@@ -22,7 +22,7 @@ setup(
       
       install_requires=[
           'robotframework',
-          'jinja2',
+          #'jinja2', # Only for robotmetrics-Extension
           'matplotlib',
           'pandas',
           'seaborn'
