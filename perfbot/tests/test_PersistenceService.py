@@ -12,8 +12,6 @@ RESULT = ExecutionResult(os.path.join(os.path.dirname(__file__), 'golden.xml'))
 class TestSqlite3PersistenceService(unittest.TestCase):
     NAME_OF_TEST_DB = "perfbot_db_for_unittesting.db"
 
-    
-
     def setUp(self):
         self.persistenceService: PersistenceService = Sqlite3PersistenceService(os.path.dirname(__file__) + "/" + self.NAME_OF_TEST_DB)
         self.assertIsNotNone(self.persistenceService)
@@ -33,6 +31,3 @@ class TestSqlite3PersistenceService(unittest.TestCase):
         self.assertTrue(len(result) == 1)
         print(type(result.pop()))
         print(result)
-
-    def test_insert_and_select_multiple_testcases(self):
-        pass

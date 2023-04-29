@@ -19,7 +19,8 @@ Je komplexer der Code, desto mehr Unit-Tests.
 Der Pythoncode wird mittels Unittests (Python-Modul `unittest`) getestet. Für jede Klasse sind dabei Tests abgelegt.
 
 ```bash
-python3 -m unittest discover perfbot/tests "test_.py"
+python3 -m setup.py install #Ggf. erst neu bauen
+python3 -m setup.py test
 ```
 
 ## Integrationstest (Smoke-Test)

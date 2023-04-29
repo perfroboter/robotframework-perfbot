@@ -32,4 +32,5 @@ setup(
               'perfbot=perfbot.perfbot:main',
           ]
       },
+      test_suite="perfbot.tests",
       )
