@@ -1,4 +1,4 @@
-from PerfEvalResultModifier import PerfEvalResultModifier
+from .PerfEvalResultModifier import PerfEvalResultModifier
 
 """Hier ist der Einstiegspunkt von perfbot: 
 
@@ -17,3 +17,6 @@ class perfbot(PerfEvalResultModifier):
     :param PerfEvalResultModifier: Basisklasse in der die eigentliche Logik stattfindet. 
     """
     pass
+
+def main():
+    print("Please start with --prerobotmodifier Option of rebot oder robot")

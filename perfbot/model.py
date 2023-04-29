@@ -54,6 +54,23 @@ class Testrun(NamedTuple):
     def get_values_as_tuple(self):
         return tuple(self.__dict__.values())
 
+class   Keywordrun(NamedTuple):
+    name: str
+    longname: str
+    testcase_longname: str
+    parent_keyword_longname: any
+    libname: any
+    starttime: any
+    elapsedTime: any
+    status: any
+    keyword_level: int
+    counter: int
+
+class Keywordrun_stats(Keywordrun):
+    avg: any
+    min: any
+    max: any
+    count: any
     
 class StoredTestrun(Testrun):
     id: any

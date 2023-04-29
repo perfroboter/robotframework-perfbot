@@ -9,7 +9,7 @@ Suite Teardown    Aufraeumen
 *** Variables ***
 ${BROWSER}      Chrome
 ${START_SUT}    python3 example/sut/server.py
-${RUN_ROBOT}    robot --prerebotmodifier perfbot/perfbot.py:devn=0.1:db_path="tests/itests/temp/test.db":boxplot=True:testbreaker=True --outputdir tests/itests/temp example/tests
+${RUN_ROBOT}    python3 -m robot --prerebotmodifier perfbot.perfbot:devn=0.1:db_path="tests/itests/temp/test.db":boxplot=True:testbreaker=True:boxplot_folder="tests/itests/temp/" -o tempoutput.xml -l templog.html -r tempreport.html example/tests
 
 *** Test Cases ***
 Perfbot im ersten Durchlauf testen
@@ -34,9 +34,11 @@ Perfbot im dritten Durchlauf testen
 *** Keywords ***
 Vorbereiten
     Remove Directory    tests/itests/temp    recursive=True
+    Create Directory    tests/itests/temp
     Beispiel SUT starten
     ${pwd}=	Run Process    pwd    shell=yes
-    Set Global Variable    ${LOG_HTML}    file://${pwd.stdout}/tests/itests/temp/log.html
+    Log    pwd: ${pwd.stdout}
+    Set Global Variable    ${LOG_HTML}    file://${pwd.stdout}/templog.html
     Log    Ablageort der LOG-HTML ermittelt: ${LOG_HTML}
 Beispiel SUT starten
     Start Process    ${START_SUT}    shell=yes    alias=sut
@@ -44,9 +46,9 @@ Beispiel mit Robot testen
     ${result}=	Run Process    ${RUN_ROBOT}    shell=yes
 Vorhandensein der Dateien pruefen
     File Should Exist    tests/itests/temp/test.db
-    File Should Exist    tests/itests/temp/output.xml
-    File Should Exist    tests/itests/temp/log.html
-    File Should Exist    tests/itests/temp/report.html
+    File Should Exist    tempoutput.xml
+    File Should Exist    templog.html
+    File Should Exist    tempreport.html
 Log-Datei pruefen
     [Arguments]    ${logdatei}=${LOG_HTML}    ${metadata_feld}=Performance Analysis:    ${titel_in_tabelle}= Deviation from avg    ${erster_testfall}=Invalid Username    ${testflauf_anzahl}=1
     Open Browser    ${logdatei}   ${BROWSER}
@@ -68,4 +70,7 @@ Boxplot in Log-Datei und lokal pruefen
 Aufraeumen
     Terminate All Processes    kill=True
     Remove Directory    tests/itests/temp    recursive=True
+    Remove File         tempoutput.xml
+    Remove File         templog.html
+    Remove File         tempreport.html
     
