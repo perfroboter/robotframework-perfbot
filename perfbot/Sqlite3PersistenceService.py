@@ -13,7 +13,7 @@ SQL_INSERT_OR_IGNORE_TESTCASE = "INSERT OR IGNORE INTO testcase (name, longname,
 SQL_INSERT_TESTCASE_RUN = "INSERT INTO testcase_run (testcase_id, test_execution_id, starttime, elapsedtime, status) VALUES ((SELECT id FROM testcase WHERE longname = ?), (SELECT max(id) FROM test_execution), ?, ?,?);"
 SQL_INSERT_OR_IGNORE_KEYWORD = "INSERT OR IGNORE INTO keyword (name, longname, libname) VALUES (?,?,?)"
 SQL_INSERT_KEYWORD_RUN = "INSERT INTO keyword_run (testcase_run_id, keyword_id, starttime, elapsedtime, status, keyword_level, stepcounter, parent_keyword_longname) VALUES ((SELECT max(testcase_run.id) FROM testcase_run INNER JOIN testcase ON testcase_run.testcase_id = testcase.id WHERE testcase.longname =?), (SELECT id FROM keyword WHERE keyword.longname = ?),?,?,?,?,?,?)"
-SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTCASE = "SELECT * FROM testcase_run_view WHERE longname = ?"
+SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTCASE = "SELECT id ,name, longname, starttime , elapsedtime , status FROM testcase_run_view WHERE longname = ?"
 SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTSUITE = "SELECT id ,name, longname, starttime , elapsedtime , status FROM testcase_run_view WHERE longname LIKE ?"
 SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_TESTCASE = "SELECT * FROM keyword_run_view WHERE testcase_longname = ?"
 SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_TESTSUITE = "SELECT * FROM keyword_run_view WHERE testcase_longname LIKE ?"

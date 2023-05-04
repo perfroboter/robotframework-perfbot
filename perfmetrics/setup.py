@@ -22,6 +22,7 @@ setup(
       
       install_requires=[
           'robotframework',
+          'perfbot',
           'jinja2',
           'pandas',
       ],

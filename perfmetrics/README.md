@@ -14,6 +14,12 @@ Creates custom HTML report (dashboard view) by parsing robotframework output.xml
  - Whats new in __v3.3.1__ [link](https://github.com/adiralashiva8/robotframework-metrics/releases/tag/v3.3.1)
 
 ---
+#### How it realys works with Perfbot
+```bash
+robotmetrics -spa True --perf_database example/robot-exec-times.db
+
+```
+
 
 #### How it Works:
 

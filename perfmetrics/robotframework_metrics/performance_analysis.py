@@ -1,4 +1,5 @@
-from .PersistenceService import PersistenceService
+from perfbot.PersistenceService import PersistenceService
+from perfbot.PerfEvalVisualizer import PerfEvalVisualizer
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -15,34 +16,29 @@ class PerformanceAnalysis():
         self.test_list = test_list
         self.kw_list = kw_list
         self.persistenceService: PersistenceService = persistenceService
+        self.perfEvalVisualizer: PerfEvalVisualizer = PerfEvalVisualizer(None)
         self.perf_analysis = perf_analysis
 
-    def generate_boxplot_of_multiple_tests(self, hist_tests, act_tests):
-        sns.set_theme(style="darkgrid")
-        df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
-        df["elapsedtime"] = df["elapsedtime"].astype(int) / 1000
-        boxplot = sns.boxplot(x='elapsedtime', y='name', data=df)
+    def generate_boxplot_of_one_test(self, hist_tests, act_test):
+        hist = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
+        logging.info(str(act_test))
+        temp = []
+        temp.append(act_test)
+        act = pd.DataFrame(temp,columns =["Test Name" , "Test Longname",  "Status (Act)","Time (Act)", "Starttime"], copy=True)
+        act["elapsedtime"] = act["Time (Act)"]
+        act["name"] = act["Test Name"]
+        logging.info(act)
+        return self.perfEvalVisualizer.generate_boxplot(hist, act, format="svg")
 
-        boxplot.set_xlabel("Elapsed time in ms")
-        boxplot.set_ylabel("Testcases")
-        boxplot.figure.suptitle('Box-Plot of the test duration times', fontsize=14, fontweight='bold')
-        boxplot.set_title("")
-        
-        sns.stripplot(ax=boxplot,x="elapsedtime", y="name", data=df, color="grey")
+    def generate_boxplot_of_tests(self, hist_tests, act_tests):
+        hist = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
+        act = pd.DataFrame(act_tests, copy=True)
+        act["elapsedtime"] = act["Time (Act)"]
+        act["name"] = act["Test Name"]
+        return self.perfEvalVisualizer.generate_boxplot(hist, act, format="svg")
 
-        if act_tests:
-            act = pd.DataFrame(act_tests, copy=True)
-            act["elapsedtime"] = act["Time (Act)"].astype(int) / 1000
-            act["name"] = act["Test Name"]
-            sns.stripplot(ax=boxplot,x="elapsedtime", y="name", data=act, size=7, jitter=False,color="black")
-        
-        
-        
-        
-        f = io.StringIO()
-        boxplot.figure.savefig(f, format = "svg",  bbox_inches="tight")
-        plt.clf()
-        return f.getvalue() 
+    #def generate_boxplot(self, hist_results: pd.DataFrame, act_results: pd.DataFrame, x="elapsedtime", y='name', xlabel="Duration (s)",ylabel="Testcase", heading='Box-Plot of the test duration times', format="svg"):
+
 
     def generate_timeline_of_multiple_tests(self,hist_tests, act_tests):
         sns.set_theme(style="darkgrid")
@@ -54,10 +50,10 @@ class PerformanceAnalysis():
         
         #df.set_index('ts', inplace=True)
         #Format startime as date
-        timeline = sns.lineplot(data=df,x="ts", y="elapsedtime",hue="name",markers=True)
+        timeline = sns.scatterplot(data=df,x="ts", y="elapsedtime",hue="name",markers=True)
         
-        timeline.set(xticklabels=[])  # remove the tick labels
-        timeline.tick_params(bottom=False)  # remove the ticks
+       # timeline.set(xticklabels=[])  # remove the tick labels
+       # timeline.tick_params(bottom=False)  # remove the ticks
         timeline.legend_.set_title(None)
 
         if act_tests:
@@ -72,40 +68,7 @@ class PerformanceAnalysis():
         timeline.figure.savefig(f, format = "svg",  bbox_inches="tight")
         plt.clf()
         return f.getvalue()
-
-    def generate_barplot_difference(self, names, act, hist):
-        sns.set_theme(style="white", context="talk")
-        rs = np.random.RandomState(8)
-
-        # Set up the matplotlib figure
-        f, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7, 5), sharex=True)
-
-        # Generate some sequential data
-        x = np.array(list("ABCDEFGHIJ"))
-        y1 = np.arange(1, 11)
-        sns.barplot(x=names, y=act, palette="rocket", ax=ax1)
-        ax1.axhline(0, color="k", clip_on=False)
-        ax1.set_ylabel("ACTUAL")
-
-        # Center the data to make it diverging
-        y2 = act - hist
-        sns.barplot(x=x, y=y2, palette="vlag", ax=ax2)
-        ax2.axhline(0, color="k", clip_on=False)
-        ax2.set_ylabel("Difference")
-
-        # Randomly reorder the data to make it qualitative
-        sns.barplot(x=x, y=hist, palette="deep", ax=ax3)
-        ax3.axhline(0, color="k", clip_on=False)
-        ax3.set_ylabel("HIST")
-
-        # Finalize the plot
-        sns.despine(bottom=True)
-        plt.setp(f.axes, yticks=[])
-        plt.tight_layout(h_pad=2)
-        f = io.StringIO()
-        plt.savefig(f, format = "svg")
-        plt.clf()
-        return f.getvalue()
+    
 
 
     def analysePerformance(self):
@@ -177,8 +140,8 @@ class PerformanceAnalysis():
                         "Count": int(perf_keyword[10])
                         }
                         test_perf_json["Keywords"].append(keyword_perf_json)
-
-            test_perf_json["Boxplot"] = self.generate_boxplot_of_multiple_tests(self.persistenceService.select_testcase_runs_filtered_by_testname(test["Test Longname"]),None)
+            
+            test_perf_json["Boxplot"] = self.generate_boxplot_of_one_test(self.persistenceService.select_testcase_runs_filtered_by_testname(test["Test Longname"]),test_perf_json)
             for perf_suite in suite_perf_list:
                 if(perf_suite["Suite Name"] == str(test["Suite Longname"])):
                     perf_suite["Tests"].append(test_perf_json)
@@ -187,7 +150,7 @@ class PerformanceAnalysis():
         for perf_suite in suite_perf_list:
             hist_testcases = self.persistenceService.select_testcase_runs_filtered_by_suitename(perf_suite["Suite Name"])
             act_testcases = perf_suite["Tests"]
-            perf_suite["Boxplot"] = self.generate_boxplot_of_multiple_tests(hist_testcases,act_testcases)
+            perf_suite["Boxplot"] = self.generate_boxplot_of_tests(hist_testcases,act_testcases)
             perf_suite["Timeline"] = self.generate_timeline_of_multiple_tests(hist_testcases,None)
             
         self.perf_analysis = suite_perf_list

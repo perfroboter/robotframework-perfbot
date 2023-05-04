@@ -10,8 +10,8 @@ from .keyword_results import KeywordResults
 from .keyword_times import KeywordTimes
 from .dashboard_stats import Dashboard
 from .performance_analysis import PerformanceAnalysis
-from .Sqlite3PersistenceService import Sqlite3PersistenceService
-from .PersistenceService import PersistenceService
+from perfbot.Sqlite3PersistenceService import Sqlite3PersistenceService
+from perfbot.PersistenceService import PersistenceService
 
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 file_loader = FileSystemLoader(templates_dir)
@@ -24,7 +24,7 @@ IGNORE_LIBRARIES = ["SeleniumLibrary", "BuiltIn",
 
 IGNORE_TYPES = ['FOR ITERATION', 'FOR', 'for', 'foritem']
 
-suite_list, test_list, kw_list, kw_times, perf_analysis = [], [], [], []
+suite_list, test_list, kw_list, kw_times, perf_analysis = [], [], [], [], []
 
 def generate_report(opts):
     logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -120,7 +120,8 @@ def generate_report(opts):
         logging.info(" 3,5 of 4 (optional): Analysing historical data for performance")
         kw_times = KeywordTimes().get_keyword_times(kw_list)
         hide_kw_times_menu = ""
-        perf_analysis = PerformanceAnalysis(suite_list,test_list,kw_list,persistenceService,perf_analysis).analysePerformance()
+        local = []
+        perf_analysis = PerformanceAnalysis(suite_list,test_list,kw_list,persistenceService,local).analysePerformance()
 
     logging.info(" 4 of 4: Preparing data for dashboard")
     dashboard_obj = Dashboard()

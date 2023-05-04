@@ -31,7 +31,7 @@ class PerfEvalVisualizer:
         return self.generate_boxplot(hist, act, format="png")
 
     def generate_boxplot(self, hist_results: pd.DataFrame, act_results: pd.DataFrame, x="elapsedtime", y='name', xlabel="Duration (s)",ylabel="Testcase", heading='Box-Plot of the test duration times', format="svg"):
-        sns.set_theme(style="whitegrid", context="talk")
+        sns.set_theme(style="whitegrid", context="notebook")
         hist = pd.DataFrame(hist_results, copy=True)
         hist[x] = hist[x].astype(int) / 1000
         boxplot = sns.boxplot(x=x, y=y, data=hist)
@@ -48,12 +48,12 @@ class PerfEvalVisualizer:
         if True:
             act = pd.DataFrame(act_results, copy=True)
             act[x] = act[x].astype(int) / 1000
-            plt.plot(act[x], act[y],'o', color='orange')
+            plt.plot(act[x], act[y],'o', color='orange', zorder=10)
         
         match format:
             case "svg":
                 f = io.StringIO()
-                boxplot.figure.savefig(f, format = "svg")
+                boxplot.figure.savefig(f, format = "svg", bbox_inches="tight")
                 plt.clf()
                 return f.getvalue() 
 
