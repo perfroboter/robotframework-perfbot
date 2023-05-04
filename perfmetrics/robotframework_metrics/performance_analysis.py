@@ -19,15 +19,25 @@ class PerformanceAnalysis():
         self.perfEvalVisualizer: PerfEvalVisualizer = PerfEvalVisualizer(None)
         self.perf_analysis = perf_analysis
 
+    def generate_boxplot_of_positional_keyword(self, keyword_json):
+        hist_data = self.persistenceService.select_keyword_runs_filtered_by_positional_keyword(keyword_json["TestName"], keyword_json["Name"], keyword_json["Stepcounter"])
+        hist = pd.DataFrame(hist_data, columns =["testcase_name" , "testcase_longname" , "suitename" , "kw_name" , "kw_longname" , "libname" , "starttime" , "elapsedtime" , "status" , "keyword_level" , "stepcounter" , "parent_keyword_longname" , "id" , "hostname"])
+        temp = []
+        temp.append(keyword_json)
+        
+        act = pd.DataFrame(temp,columns =["Name", "TestName", "Libname","Libname", "Time", "Stepcounter"], copy=True)
+        act["elapsedtime"] = act["Time"]
+        act["kw_longname"] = act["Name"]
+        return self.perfEvalVisualizer.generate_boxplot(hist,act,y="kw_longname",ylabel="Keyword",heading="Box-Plot of keyword duration times")
+
     def generate_boxplot_of_one_test(self, hist_tests, act_test):
         hist = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
-        logging.info(str(act_test))
         temp = []
         temp.append(act_test)
         act = pd.DataFrame(temp,columns =["Test Name" , "Test Longname",  "Status (Act)","Time (Act)", "Starttime"], copy=True)
         act["elapsedtime"] = act["Time (Act)"]
         act["name"] = act["Test Name"]
-        logging.info(act)
+        
         return self.perfEvalVisualizer.generate_boxplot(hist, act, format="svg")
 
     def generate_boxplot_of_tests(self, hist_tests, act_tests):
@@ -137,8 +147,10 @@ class PerformanceAnalysis():
                         "Avg": int(perf_keyword[7]),
                         "Min": int(perf_keyword[8]),
                         "Max": int(perf_keyword[9]),
-                        "Count": int(perf_keyword[10])
+                        "Count": int(perf_keyword[10]),
+                        "Boxplot": None
                         }
+                        keyword_perf_json["Boxplot"] = self.generate_boxplot_of_positional_keyword(keyword_perf_json)
                         test_perf_json["Keywords"].append(keyword_perf_json)
             
             test_perf_json["Boxplot"] = self.generate_boxplot_of_one_test(self.persistenceService.select_testcase_runs_filtered_by_testname(test["Test Longname"]),test_perf_json)

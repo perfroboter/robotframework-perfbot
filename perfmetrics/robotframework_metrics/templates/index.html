@@ -620,7 +620,7 @@
                           {% for keyword in test["Keywords"] %}
                             <tr>
                               
-                              <td style="word-wrap: break-word;max-width: 250px; white-space: normal; cursor: pointer;  text-align: left;">{{ keyword['Name'] }}</td>
+                              <td data-toggle="modal" data-target="#modalkeyword{{ keyword['Name'].replace(" ","").replace(".","") }}{{keyword['TestName'].replace(" ","").replace(".","")}}{{keyword['Stepcounter']}}" style="word-wrap: break-word;max-width: 250px; white-space: normal; cursor: pointer; color:blue; text-align: left;">{{ keyword['Name'] }}</td>
                               <td>{{ (keyword['Time']/1000)|round(2) }}</td> 
                               {% if (keyword['Status'] == "PASS") %}
                               <td style="color: green"> {{ keyword['Status'] }}</td>
@@ -650,6 +650,75 @@
               
             </div>
           </div>
+          <!-- Positional Keyword Modal -->
+          {% for keyword in test["Keywords"] %}
+          <div id="modalkeyword{{ keyword['Name'].replace(" ","").replace(".","") }}{{keyword['TestName'].replace(" ","").replace(".","")}}{{keyword['Stepcounter']}}" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+          
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Performance Analysis</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Performance Analysis of Keyword {{ keyword['Name'] }}</h3>
+                    <h4>called in Testcase {{ keyword['TestName'] }} in Step {{ keyword['Stepcounter'] }}</h4>
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Performance of positional Keyword</div>
+                      <div class="panel-body">
+                        <table class="table table-striped">
+                          <thead>
+                            <th>Keyword</th>
+                            <th>Time (s)</th>
+                            <th>Status</th>
+                            <th>KW Level</th>
+                            <th>KW Number</th>
+                            <th>Min Duration (s)</th>
+                            <th>Max Duration (s)</th>
+                            <th>Avg Duration (s)</th>
+                            <th>Evaluated Times</th>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                
+                                <td >{{ keyword['Name'] }}</td>
+                                <td>{{ (keyword['Time']/1000)|round(2) }}</td> 
+                                {% if (keyword['Status'] == "PASS") %}
+                                <td style="color: green"> {{ keyword['Status'] }}</td>
+                                {% elif (keyword['Status'] == "FAIL") %}
+                                <td style="color: red"> {{ keyword['Status'] }}</td>
+                                {% else %}
+                                <td style="color: orange"> {{ keyword['Status'] }}</td>
+                                {% endif %}
+                                <!--TODO: IF NO STATS -->
+                                <td>{{  keyword["Level"] }}</td>
+                                <td>{{  keyword["Stepcounter"] }}</td>
+                                <td>{{  keyword["Min"]/1000|round(2) }}</td>
+                                <td>{{  keyword["Max"]/1000|round(2) }}</td>
+                                <td>{{  keyword["Avg"]/1000|round(2) }}</td>
+                                <td>{{  keyword["Count"] }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+  
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Boxplot-Visualization of Positional Keyword</div>
+                      <div class="panel-body">
+                        {{ keyword['Boxplot'] }}
+                      </div>
+                    </div>
+  
+               </div>
+                <div class="modal-footer">
+                  <button type="button" class="dt-button buttons-html5" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          {% endfor %}
           {% endfor %}
         {% endfor %}
 

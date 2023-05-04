@@ -61,3 +61,7 @@ class PersistenceService:
     @abstractmethod
     def select_positional_keyword_stats(self, testcase_filter=None):
         pass
+    
+    @abstractmethod
+    def select_keyword_runs_filtered_by_positional_keyword(self, testcase_longname, keyword_longname, stepcounter):
+        pass
