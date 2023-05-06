@@ -2,6 +2,7 @@ from perfbot.PersistenceService import PersistenceService
 from perfbot.PerfEvalVisualizer import PerfEvalVisualizer
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from datetime import datetime
 import os, glob
 from pathlib import Path
@@ -49,9 +50,8 @@ class PerformanceAnalysis():
 
     #def generate_boxplot(self, hist_results: pd.DataFrame, act_results: pd.DataFrame, x="elapsedtime", y='name', xlabel="Duration (s)",ylabel="Testcase", heading='Box-Plot of the test duration times', format="svg"):
 
-
     def generate_timeline_of_multiple_tests(self,hist_tests, act_tests):
-        sns.set_theme(style="darkgrid")
+        sns.set_theme(style="whitegrid", context="notebook")
         df = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
         df["elapsedtime"] = df["elapsedtime"].astype(int) / 1000
         df['starttime'] = pd.to_datetime(df['starttime'], format='%Y%m%d %H:%M:%S.%f')
@@ -60,7 +60,7 @@ class PerformanceAnalysis():
         
         #df.set_index('ts', inplace=True)
         #Format startime as date
-        timeline = sns.scatterplot(data=df,x="ts", y="elapsedtime",hue="name",markers=True)
+        timeline = sns.scatterplot(data=df,x="starttime",y="elapsedtime", hue="name",markers=True)
         
        # timeline.set(xticklabels=[])  # remove the tick labels
        # timeline.tick_params(bottom=False)  # remove the ticks
@@ -72,12 +72,15 @@ class PerformanceAnalysis():
             act['ts'] =  act["Starttime"].astype(int)
             act["elapsedtime"] = act["Time (Act)"].astype(int) / 1000
             act["name"] = act["Test Name"]
-            stipplot = timeline.plot(act["ts"], act["elapsedtime"],'o', color='black')
+            stipplot = timeline.plot(act["Starttime"], act["elapsedtime"],'o', color='black')
         
+        #timeline.set_xticklabels(timeline.get_xticklabels(), rotation=45, horizontalalignment='right')
+        timeline.xaxis.set_major_formatter(mdates.ConciseDateFormatter(timeline.xaxis.get_major_locator()))
         f = io.StringIO()
         timeline.figure.savefig(f, format = "svg",  bbox_inches="tight")
         plt.clf()
         return f.getvalue()
+
     
 
 
@@ -124,6 +127,7 @@ class PerformanceAnalysis():
                 "Max": max,
                 "Count": count,
                 "Boxplot": None,
+                "Timeline": None,
                 "Std": None,
                 "P25": None,
                 "P50": None,
@@ -175,6 +179,7 @@ class PerformanceAnalysis():
             test_perf_json["P50"] = t_stats["50%"]
             test_perf_json["P75"] = t_stats["75%"]
             test_perf_json["Boxplot"] = self.generate_boxplot_of_one_test(testcase_runs,test_perf_json)
+            test_perf_json["Timeline"] = self.generate_timeline_of_multiple_tests(testcase_runs,None)
             for perf_suite in suite_perf_list:
                 if(perf_suite["Suite Name"] == str(test["Suite Longname"])):
                     perf_suite["Tests"].append(test_perf_json)
@@ -184,7 +189,7 @@ class PerformanceAnalysis():
             hist_testcases = self.persistenceService.select_testcase_runs_filtered_by_suitename(perf_suite["Suite Name"])
             act_testcases = perf_suite["Tests"]
             perf_suite["Boxplot"] = self.generate_boxplot_of_tests(hist_testcases,act_testcases)
-            perf_suite["Timeline"] = self.generate_timeline_of_multiple_tests(hist_testcases,None)
+            perf_suite["Timeline"] = self.generate_timeline_of_multiple_tests(hist_testcases,act_testcases)
             
         self.perf_analysis = suite_perf_list
 
