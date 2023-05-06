@@ -124,6 +124,10 @@ class PerformanceAnalysis():
                 "Max": max,
                 "Count": count,
                 "Boxplot": None,
+                "Std": None,
+                "P25": None,
+                "P50": None,
+                "P75": None,
                 "Keywords": []
             }
 
@@ -148,12 +152,29 @@ class PerformanceAnalysis():
                         "Min": int(perf_keyword[8]),
                         "Max": int(perf_keyword[9]),
                         "Count": int(perf_keyword[10]),
-                        "Boxplot": None
+                        "Boxplot": None,
+                        "Std": None,
+                        "P25": None,
+                        "P50": None,
+                        "P75": None,
                         }
                         keyword_perf_json["Boxplot"] = self.generate_boxplot_of_positional_keyword(keyword_perf_json)
+                        hist_data = self.persistenceService.select_keyword_runs_filtered_by_positional_keyword(keyword_perf_json["TestName"], keyword_perf_json["Name"], keyword_perf_json["Stepcounter"])
+                        k_stats = pd.DataFrame(hist_data, columns =["testcase_name" , "testcase_longname" , "suitename" , "kw_name" , "kw_longname" , "libname" , "starttime" , "elapsedtime" , "status" , "keyword_level" , "stepcounter" , "parent_keyword_longname" , "id" , "hostname"])['elapsedtime'].astype(int).describe()
+                        keyword_perf_json["Std"] = k_stats["std"]
+                        keyword_perf_json["P25"] = k_stats["25%"]
+                        keyword_perf_json["P50"] = k_stats["50%"]
+                        keyword_perf_json["P75"] = k_stats["75%"]
+
                         test_perf_json["Keywords"].append(keyword_perf_json)
             
-            test_perf_json["Boxplot"] = self.generate_boxplot_of_one_test(self.persistenceService.select_testcase_runs_filtered_by_testname(test["Test Longname"]),test_perf_json)
+            testcase_runs = self.persistenceService.select_testcase_runs_filtered_by_testname(test["Test Longname"])
+            t_stats = pd.DataFrame(testcase_runs, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"])['elapsedtime'].astype(int).describe()
+            test_perf_json["Std"] = t_stats["std"]
+            test_perf_json["P25"] = t_stats["25%"]
+            test_perf_json["P50"] = t_stats["50%"]
+            test_perf_json["P75"] = t_stats["75%"]
+            test_perf_json["Boxplot"] = self.generate_boxplot_of_one_test(testcase_runs,test_perf_json)
             for perf_suite in suite_perf_list:
                 if(perf_suite["Suite Name"] == str(test["Suite Longname"])):
                     perf_suite["Tests"].append(test_perf_json)

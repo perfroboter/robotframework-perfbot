@@ -128,7 +128,6 @@
             <li><a href="#" class="tablink" onclick="openPage('testMetrics', this, '#fc6666'); executeDataTable('#tm',3)">Test</a></li>
              <li class="{{ hide_keyword_menu }}"><a href="#" class="tablink" onclick="openPage('keywordMetrics', this, '#fc6666'); executeDataTable('#km',3)">Keyword</a></li>
             <li class="{{ hide_kw_times_menu }}"><a href="#" class="tablink" onclick="openPage('keywordMetricsTime', this, '#fc6666'); executeDataTable('#kmt',1)">KW Times</a></li>
-            <li class="{{ hide_kw_times_menu }}"><a href="#" class="tablink" onclick="openPage('keywordPerformance', this, '#fc6666'); executeDataTable('#kmt',1)">KW Perf</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a>Execution Time(m): {{ (suite_stats['Time']/60000)|round(2) }}</a></li>
@@ -461,34 +460,7 @@
         </table>
       </div>
 
-      <!-- Keyword Average -->
-      <div class="tabcontent" id="keywordPerformance">
-        <h4>keywordPerformance</h4>
-        <table id="kmt" class="display tablecard" style="width:100%">
-          <thead>
-              <tr>
-                  <th>Keyword Name</th>
-                  <th>Times</th>
-                  <th>Min Duration(s)</th>
-                  <th>Max Duration(s)</th>
-                  <th>Average Duration(s)</th>
-              </tr>
-          </thead>
-          <tbody>
-            {% if not keyword_times.empty %}
-              {% for key, value in keyword_times.iterrows() %}
-                <tr>
-                  <td style="word-wrap: break-word;max-width: 250px; white-space: normal; text-align: left;">{{ value['Name'] }}</td>
-                  <td>{{ value['times'] }}</td>
-                  <td>{{ (value['time_min']/1000)|round(2) }}</td>
-                  <td>{{ (value['time_max']/1000)|round(2) }}</td>
-                  <td>{{ (value['time_mean']/1000)|round(2) }}</td>
-                </tr>
-              {% endfor %}
-            {% endif %}
-          </tbody>
-        </table>
-      </div>
+
 
     </div>
 
@@ -578,16 +550,24 @@
                           <th>Max Duration (s)</th>
                           <th>Avg Duration (s)</th>
                           <th>Evaluated Times</th>
+                          <th>Std</th>
+                          <th>25%</th>
+                          <th>50%</th>
+                          <th>75%</th>
                         </thead>
                         <tbody>
                             <tr>
                               <td style="word-wrap: break-word;max-width: 250px; white-space: normal; cursor: pointer;  text-align: left;">{{ test["Test Name"] }}</td>
                               <td>{{ (test["Time (Act)"]/1000)|round(2) }}</td> 
                               <!--TODO: IF NO STATS -->
-                              <td>{{  test["Min"]/1000|round(2) }}</td>
-                              <td>{{  test["Max"]/1000|round(2) }}</td>
-                              <td>{{  test["Avg"]/1000|round(2) }}</td>
+                              <td>{{  (test["Min"]/1000)|round(2) }}</td>
+                              <td>{{  (test["Max"]/1000)|round(2) }}</td>
+                              <td>{{  (test["Avg"]/1000)|round(2) }}</td>
                               <td>{{  test["Count"] }}</td>
+                              <td>{{  (test["Std"]/1000)|round(2) }}</td>
+                              <td>{{  (test["P25"]/1000)|round(2) }}</td>
+                              <td>{{  (test["P50"]/1000)|round(2) }}</td>
+                              <td>{{  (test["P75"]/1000)|round(2) }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -702,7 +682,33 @@
                         </table>
                       </div>
                     </div>
-  
+                    
+                    <div class="panel panel-default">
+                      <div class="panel-heading">Statistics of Positional Keyword</div>
+                      <div class="panel-body">
+                        <table class="table table-striped">
+                          <thead>
+                            <th>Keyword</th>
+                            <th>Time (s)</th>
+                            <th>Std (s)</th>
+                            <th>25% (s) </th>
+                            <th>50% (s)</th>
+                            <th>75% (s) </th>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td>{{ keyword['Name'] }}</td>
+                                <td>{{ (keyword['Time']/1000)|round(2) }}</td> 
+                                <td>{{  (test["Std"]/1000)|round(2) }}</td>
+                                <td>{{  (test["P25"]/1000)|round(2) }}</td>
+                                <td>{{  (test["P50"]/1000)|round(2) }}</td>
+                                <td>{{  (test["P75"]/1000)|round(2) }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
                     <div class="panel panel-default">
                       <div class="panel-heading">Boxplot-Visualization of Positional Keyword</div>
                       <div class="panel-body">
