@@ -122,6 +122,7 @@ def generate_report(opts):
         hide_kw_times_menu = ""
         local = []
         perf_analysis = PerformanceAnalysis(suite_list,test_list,kw_list,persistenceService,local).analysePerformance()
+        test_perf_list = PerformanceAnalysis.getTestsPerfStats(perf_analysis)
 
     logging.info(" 4 of 4: Preparing data for dashboard")
     dashboard_obj = Dashboard()
@@ -130,6 +131,7 @@ def generate_report(opts):
     kw_stats = dashboard_obj.get_keyword_statistics(kw_list)
     error_stats = dashboard_obj.group_error_messages(test_list)
     suite_error_stats = dashboard_obj.suite_error_statistics(suite_list)
+    perf_slow_tests, perf_failed_tests, perf_fast_tests, perf_normal_tests = dashboard_obj.get_perf_test_statistics(test_perf_list)
     # print(suite_error_stats)
 
     logging.info(" Writing results to html file")
@@ -150,5 +152,9 @@ def generate_report(opts):
             keyword_times = kw_times,
             error_stats = error_stats,
             suite_error_stats = suite_error_stats,
+            perf_slow_tests = perf_slow_tests,
+            perf_failed_tests = perf_failed_tests,
+            perf_fast_tests = perf_fast_tests,
+            perf_normal_tests = perf_normal_tests
         ))
     logging.info(" Results file created successfully and can be found at {}".format(result_file))

@@ -1,4 +1,5 @@
 import pandas as pd
+import logging
 
 
 class Dashboard:
@@ -54,6 +55,23 @@ class Dashboard:
                 "Skip"  : 0,
             }
         return kw_stats
+    
+    def get_perf_test_statistics(self, test_perf_list):
+        perf_slow_tests = []
+        perf_failed_tests = []
+        perf_fast_tests = []
+        perf_normal_tests = []
+        for test in test_perf_list:
+            if (test["Status (Act)"] != "PASS"):
+                perf_failed_tests.append(test)
+            elif(int(test["P75"]) < int(test["Time (Act)"])):
+                perf_slow_tests.append(test)
+            elif(int(test["P25"]) > int(test["Time (Act)"])):
+                perf_fast_tests.append(test)
+            else:
+                perf_normal_tests.append(test)
+        logging.info(str(perf_slow_tests))      
+        return perf_slow_tests, perf_failed_tests, perf_fast_tests, perf_normal_tests
     
     def group_error_messages(self, test_list):
         test_data_frame = pd.DataFrame.from_records(test_list)

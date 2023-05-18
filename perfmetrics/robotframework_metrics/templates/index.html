@@ -296,6 +296,42 @@
           </div>
           <div class="row"></div>
         </div>
+
+        <!-- Permetrics Dashboard Extension-->
+      <div class="row"></div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="col-md-12 rowcard">
+            <span class="card-header">Performance - Slow Testcases</span>
+            <span >Performance - Top 5 Slowest Testcases:</span>
+            {% if not perf_slow_tests.empty %}
+              <table class="ecard-table">
+                <tr>
+                  <th>Testcase</th>
+                  <th>Elasped Time</th>
+                  <th>75 %</th>
+                  <th>Deviation (%)</th>
+                </tr>
+                {% for test in perf_slow_tests %}
+                    <td>{{test["Test Name"]}}</td>
+                    <td>{{( test["Time (Act)"]/1000)|round(2) }}</td>
+                    <td>{{( test["P75"]/1000)|round(2) }}</td>
+                    <td>{{( test["Devn75"]*100)|round(2) }} %</td>
+                  </tr>
+              {% endfor %}
+            </table> 
+            {% else %}
+                <p>No Tests slow than the 75. Quantile.</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="col-md-12 rowcard">
+            <span class="card-header">Other Card</span>
+            <p>Content</p>
+          </div>
+        </div>
+      </div>
       </div>
 
       <!-- Suite Data -->

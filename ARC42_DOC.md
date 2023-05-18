@@ -81,7 +81,6 @@ Die Integration in das Robot Framework ist die wesentliche Technologieentscheidu
 ## Komponentendiagramm (Whitebox Gesamtsystem) 
 
 ```plantuml
-@startuml
 
 node "Robot Framework" {
     () API
@@ -91,15 +90,14 @@ node Perfbot {
 
 }
 
-[Perfbot] ..> () API : uses
-
-[Perfbot] ..> () Sqlite3 : uses
-
 database Sqlite3 {
 
 }
 
-@enduml
+[Perfbot] ..> () API : uses
+
+[Perfbot] ..> () Sqlite3 : uses
+
 ```
 
 Siehe auch High-Level-Architektur unter "Technischer Kontext"
@@ -125,6 +123,8 @@ Robot Framework API        | Die Ausführung des Perfbots wird durch die API des
 ## Klassendiagramm
 
 ```plantuml
+
+
 class robot.api.ResultVisitor 
 class perfbot.PerfEvalResultModifier 
 class perfbot.perfbot #DDDDDD
@@ -140,6 +140,7 @@ perfbot.PerfEvalResultModifier o-- perfbot.PerfEvalVisualizer
 perfbot.PersistenceService <|-- perfbot.Sqlite3PersistenceService
 
 note left of perfbot.perfbot: Starter
+
 ```
 
 **Begründung für diese Darstellungsweise**
@@ -157,51 +158,6 @@ PerfEvalVisualizer         | übernimmt die visuelle Aufbereitung z. B. in Box-P
 PersistenceService         | Abstrakte Klasse, um die eigentliche Implementierung, wie die Testlaufergebnisse gespeichert bzw. abgerufen werden zu verschleiern.
 Sqlite3PersistenceService  | Konkrete Persistierung der Testergebnisse in einer lokalen Sqlite3-Datei.
 
-## Datenmodell
-```plantuml
-' verstecke das E im Entitäten-Titel
-hide circle
-
-' verhindere Probleme mit gewinkelten Krähenfüßen
-skinparam linetype ortho
-
-entity "testexecution" as te {
-  *e1_id : nummer <<generiert>>
-  --
-  *name : text
-  beschreibung: text
-}
-
-entity "testcase" as tc {
-  *id : nummer <<generiert>>
-  --
-  *imported_at : text
-  *hostname: text
-}
-
-entity "testcase_run" as tcr {
-  *e2_id : nummer <<generiert>>
-  --
-  *e1_id : nummer <<FS>>
-  andere_details : text
-}
-
-entity "keyword" as kw {
-  *e1_id : nummer <<generiert>>
-  --
-  *name : text
-  beschreibung: text
-}
-
-entity "keyword_run" as kwr {
-  *e2_id : nummer <<generiert>>
-  --
-  *e1_id : nummer <<FS>>
-  andere_details : text
-}
-
-
-```
 
 # Laufzeitsicht
 
@@ -273,7 +229,6 @@ Im der folgenden Grafik - dem sogenannten Qualitätsbaum (englisch: Utitlty Tree
 ***_ Ü2
 ***_ Ü3
 ***_ Ü4
-
 @endmindmap
 ```
 

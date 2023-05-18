@@ -81,7 +81,24 @@ class PerformanceAnalysis():
         plt.clf()
         return f.getvalue()
 
-    
+    @staticmethod
+    def getTestsPerfStats(perf_analysis):
+        test_perf_list = []
+        for suite in perf_analysis:
+             for test in suite["Tests"]:
+                        perf_test_stats = {
+                        "Test Name" :test["Test Name"],
+                        "Status (Act)": test["Status (Act)"],
+                        "Time (Act)": int(test["Time (Act)"]),
+                        "Avg": int(test["Avg"]),
+                        "P75": int(test["P75"]),
+                        "P25": int(test["P25"]),
+                        "DevnAvg": (int(test["Time (Act)"]) - int(test["Avg"]))/int(test["Avg"]),
+                        "Devn75": (int(test["Time (Act)"]) - int(test["P75"]))/int(test["P75"]),
+                        "Devn25": (int(test["Time (Act)"]) - int(test["P25"]))/int(test["P25"]),
+                        }
+                        test_perf_list.append(perf_test_stats)
+        return test_perf_list
 
 
     def analysePerformance(self):
