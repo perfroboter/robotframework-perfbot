@@ -94,6 +94,18 @@
       .skip {
         color: orange;
       }
+
+      .fast {
+        color: #8cda82;
+      }
+
+      .normal {
+        color: #808080b7;
+      }
+
+      .slow {
+        color: #f866669b;
+      }
       
       .loader {
           position: fixed;
@@ -298,13 +310,44 @@
         </div>
 
         <!-- Permetrics Dashboard Extension-->
-      <div class="row"></div>
+      
+      <div class="row">
+        <div class="col-md-4">
+          <div class="col-md-12 rowcard">
+            <span class="card-header">Test Performance Statistics:</span>
+            <div class="col-md-12">
+                <div id="testPerfPie"></div>
+            </div>
+            <div class="col-md-12">
+                <table class="card-table">
+                  <tr>
+                    <td class="slow">{{perf_slow_tests|length}}</td>
+                    <td class="fast">{{perf_fast_tests|length}}</td>
+                  </tr>
+                  <tr>
+                    <td>Slow</td>
+                    <td>Fast</td>
+                  </tr>
+                </table>
+                <table class="card-table">
+                  <tr>
+                    <td class="fail">{{ perf_failed_tests|length}}</td>
+                    <td class="normal">{{perf_normal_tests|length}}</td>
+                  </tr>
+                  <tr>
+                    <td>Fail</td>
+                    <td>Normal</td>
+                  </tr>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-6">
           <div class="col-md-12 rowcard">
             <span class="card-header">Performance - Slow Testcases</span>
-            <span >Performance - Top 5 Slowest Testcases:</span>
-            {% if not perf_slow_tests.empty %}
+            {% if perf_slow_tests|length > 0 %}
               <table class="ecard-table">
                 <tr>
                   <th>Testcase</th>
@@ -313,7 +356,7 @@
                   <th>Deviation (%)</th>
                 </tr>
                 {% for test in perf_slow_tests %}
-                    <td>{{test["Test Name"]}}</td>
+                    <td data-toggle="modal" data-target="#modaltest{{ test['Test Longname'].replace(" ","").replace(".","") }}" style="word-wrap: break-word;max-width: 250px; white-space: normal; cursor: pointer; color:blue; text-align: left;">{{test["Test Name"]}}</td>
                     <td>{{( test["Time (Act)"]/1000)|round(2) }}</td>
                     <td>{{( test["P75"]/1000)|round(2) }}</td>
                     <td>{{( test["Devn75"]*100)|round(2) }} %</td>
@@ -321,17 +364,38 @@
               {% endfor %}
             </table> 
             {% else %}
-                <p>No Tests slow than the 75. Quantile.</p>
+                <p>No Test slower than the 75. Quantile.</p>
             {% endif %}
           </div>
         </div>
         <div class="col-md-6">
           <div class="col-md-12 rowcard">
-            <span class="card-header">Other Card</span>
-            <p>Content</p>
+            <span class="card-header">Performance - Fast Testcases</span>
+            {% if perf_fast_tests|length > 0 %}
+              <table class="ecard-table">
+                <tr>
+                  <th>Testcase</th>
+                  <th>Elasped Time</th>
+                  <th>75 %</th>
+                  <th>Deviation (%)</th>
+                </tr>
+                {% for test in perf_fast_tests %}
+                    <td data-toggle="modal" data-target="#modaltest{{ test['Test Longname'].replace(" ","").replace(".","") }}" style="word-wrap: break-word;max-width: 250px; white-space: normal; cursor: pointer; color:blue; text-align: left;">{{test["Test Name"]}}</td>
+                    <td>{{( test["Time (Act)"]/1000)|round(2) }}</td>
+                    <td>{{( test["P25"]/1000)|round(2) }}</td>
+                    <td>{{( test["Devn25"]*100)|round(2) }} %</td>
+                  </tr>
+              {% endfor %}
+            </table> 
+            {% else %}
+                <p>No Test faster than the 25. Quantile.</p>
+            {% endif %}
           </div>
         </div>
       </div>
+      </div>
+
+        
       </div>
 
       <!-- Suite Data -->
@@ -906,7 +970,28 @@
       pieChart('#suitePie', "{{suite_stats['Pass']}}", "{{suite_stats['Fail']}}", "{{suite_stats['Skip']}}");
       pieChart('#testPie', "{{test_stats['Pass']}}", "{{test_stats['Fail']}}", "{{test_stats['Skip']}}");
       pieChart('#keywordPie', "{{kw_stats['Pass']}}", "{{kw_stats['Fail']}}", "{{kw_stats['Skip']}}");
+      piePerfChart('#testPerfPie', "{{ perf_failed_tests|length }}", "{{ perf_slow_tests|length}}", "{{ perf_normal_tests|length}}", "{{ perf_fast_tests|length }}");
     };
+  </script>        
+  <script>
+    function piePerfChart(chartID, failed, slow, normal, fast) {
+        var options = {
+        series: [parseInt(failed), parseInt(slow), parseInt(normal), parseInt(fast)],
+         chart: {
+          type: 'donut',
+          width: 270,
+        },
+        labels: ["Fail", "Slow", "Normal", "Fast"],
+        legend: {
+          show: false,
+        },
+        colors: ['#fc6666', '#f866669b', '#808080b7', '#8cda82'],
+      };
+      console.log(options);
+
+      var chart = new ApexCharts(document.querySelector(chartID), options);
+      chart.render();
+    }
   </script>
   <script>
     function pieChart(chartID, passed, failed, skipped) {

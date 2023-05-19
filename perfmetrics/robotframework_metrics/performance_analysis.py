@@ -88,6 +88,7 @@ class PerformanceAnalysis():
              for test in suite["Tests"]:
                         perf_test_stats = {
                         "Test Name" :test["Test Name"],
+                        "Test Longname" :test["Test Longname"],
                         "Status (Act)": test["Status (Act)"],
                         "Time (Act)": int(test["Time (Act)"]),
                         "Avg": int(test["Avg"]),

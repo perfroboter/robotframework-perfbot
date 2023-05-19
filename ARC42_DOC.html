@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ARC42_DOC.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="perfbot---architekturdokumentation-nach-arc42">Perfbot - Architekturdokumentation nach arc42</h1>
+<h1 id="einf%C3%BChrung-und-ziele">Einführung und Ziele</h1>
+<h2 id="aufgabenstellung">Aufgabenstellung</h2>
+<p><strong>Perfbot</strong> ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Es erweitert dabei das <a href="http://www.robotframework.org">Robot Framework</a> um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse werden in die Robot-Testresults (<code>log.html</code> / <code>report.html</code>) integriert.</p>
+<h2 id="qualit%C3%A4tsziele">Qualitätsziele</h2>
+<p>Hier sind die wichtigsten Qualitätsziele beschrieben. Eine detailierte Betrachtung der Qualität erfolgt im Kapitel Qualitätsanforderungen (s. u.).</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Qualitätsziel</th>
+<th>Motivation und Erläuterung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>Vergleich der Laufzeiten von Robot-Testfällen ermöglichen (Funktionalität)</td>
+<td>Die Kernaufgabe des Tool ist es, eine Performance-Analyse zu bieten.</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>Integration ins Robot Framework (Kompatibilität)</td>
+<td>Das Tool soll ohne Veränderung der bestehenden Robot-Tests genutzt werden können. Die Ergebnisse sollen in die Standard-Ergebnisdokumente integriert werden.</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>Performantes Tool ohne Verlangsamung der eigentlichen Testausführung (Performance)</td>
+<td>Die Tool soll die Ausführung der Tests nicht verlangsamen, auch um keine Seiteneffekte auf die Messung zu haben. Auch das Tool selbst soll performant sein z. B. nicht zu viele Datenbankzugriffe tätigen.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stakeholder">Stakeholder</h2>
+<table>
+<thead>
+<tr>
+<th>Rolle</th>
+<th>Erwartungshaltung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Testautomatisierer</td>
+<td>möchte Hinweise zur Performance der Testfälle bzw. über Performance-Veränderungen des Testobjektes; erwaret eine einfache Integration in sein bisheriges Robot-Setup</td>
+</tr>
+<tr>
+<td>Entwicklungsteam</td>
+<td>möchte Performance-Probleme frühzeit entdecken; erhofft sich detailierte Infos an welcher Komponente die Performance schlechter ist</td>
+</tr>
+<tr>
+<td>Anwendungsverantwortlicher (Auftraggeber)</td>
+<td>möchte frühzeit über Performance-Probleme in Kenntnis gesetzt werden; möchte Nachweis über Performance des Anwendung</td>
+</tr>
+<tr>
+<td>Testmanagement / TA-Team</td>
+<td>möchte das Qualitätsziel &quot;Performance&quot; im Unternehmen stärker in den Fokus setzen; möchte mit reduziertem Aufwand die funktionalen Tests um nicht-funktionale Kennzahlen erweitern</td>
+</tr>
+<tr>
+<td>Forscher (Masterarbeit)</td>
+<td>möchte beurteilen, ob Kennzahlen zu bestehender UI-Tests brauchbar sind, um Aussagen über die Performance eines Testobjekts zu treffen</td>
+</tr>
+</tbody>
+</table>
+<h1 id="randbedingungen">Randbedingungen</h1>
+<h1 id="kontextabgrenzung">Kontextabgrenzung</h1>
+<p>Hinweis: Da die Funktionalität dieses Werkzeugs selbst für den Softwaretest genutzt werden soll, ist eine Abgrenzung zwischen fachlichen und technischen Kontext an dieser Stelle schwierig.</p>
+<h2 id="fachlicher-kontext">Fachlicher Kontext</h2>
+<p><strong>Was bietet das Tool?</strong></p>
+<ul>
+<li>Performance-Veränderungen zu bestehen Robot-Testfällen basierend auf archivierten Testläufen ermitteln</li>
+<li>Daten des aktuellen Testlaufs archivieren</li>
+<li>Performance-Analyse in die Robot-Result-Dateien aufbereiten
+<ul>
+<li>durch tabellarische Darstellung von Vergleichskennzahlen</li>
+<li>durch grafische Darstellung der Testlaufzeiten im Box-Plot</li>
+</ul>
+</li>
+<li>Testfälle bei prozentualer Abweichung von den archivierten Testläufen auf FAIL setzten (Testbreaker)</li>
+</ul>
+<p><strong>Wohin bestehen Schnittstellen?</strong></p>
+<ul>
+<li>zum Robot Framework und der dazugehörige Testausführungs- <code>robot</code> bzw. Testberichtgenierungs-Werkzeug <code>rebot</code></li>
+<li>zur Datenbank, die sich um die Persisitierung kümmert</li>
+</ul>
+<p><strong>Was bietet das Tool nicht?</strong></p>
+<ul>
+<li>es führt selbst keine automatisierten Testfälle aus</li>
+<li>es führt keine Last- und Performancetests im engeren Sinne durch (kann aber genutzt werden, um zu entscheiden, wo Last- und Performancetests mit dafür geeigneten Werkzeugen erfolgen sollen)</li>
+</ul>
+<h2 id="technischer-kontext">Technischer Kontext</h2>
+<p>Das Tool <code>Perfbot</code> (orange) integriert sich auf der Testausführungsschicht (schwarz) in das Robot Framework und nutzt dabei die Schnittstelle (API) des Frameworks.</p>
+<p><img src="res/architektur_high_level.png" alt="High-Level-Architektur anhand der generischen TA-Architektur"></p>
+<h1 id="l%C3%B6sungsstrategie">Lösungsstrategie</h1>
+<p>Die grundlegende Lösungsidee zur Performance-Anaylse unter Nutzung bestehender UI-Tests ist folgende: Eine generische Erweiterung des im Unternehmen verbreiteten Testautomatisierungswerkzeugs Robot Frameworks zu schaffen. Dadurch sollen Synergieeefekte durch Nutzung bestehender Testfälle und dem bestehenden Knowhow der Testautomatisierer gehoben werden.
+Konkret liegt beim Performance-Vergleich folgende Umsetzungsidee vor:</p>
+<ul>
+<li>speichern der Test-Laufzeiten in einer Datenbank</li>
+<li>vergleichen der aktuellen Laufzeit mit den archivierten Laufzeiten der Vergangenheit</li>
+<li>integrieren der Ergebnisse der Performance-Analyse in die Robot-Testresults (<code>log.html</code> / <code>report.html</code>)</li>
+</ul>
+<p>Die Performance-Analyse soll durch die drei folgenden wichtigsten Funktionen erfolgen:
+- Vergleichskennzahlen: Tabellarische Darstellung verschiedene Kennzahlen (Minimum, Maximum, Durchschnitt, Abweichung vom Durchschnitt) zur früheren Laufzeiten
+- Box-Plot: grafische Aufbereitung der Laufzeiten der Vergangenheit zu jedem Testfall
+- Testbreaker: Testfälle werden als fehlerhaft makiert, wenn ein Schwellwert zu Abweichung von vergangen Test-Laufzeiten überschritten wird.</p>
+<p>Die Integration in das Robot Framework ist die wesentliche Technologieentscheidung, dadruch kann die bestehende API des Robot Frameworks genutzt werden. Gleichzeitig schafft dies auch eine klare Abhängigkeit zum Framework und gewisse Technologievorgaben z. B. die Nutzung von Python als Programmiersprache sind damit vorbestimmt.</p>
+<h1 id="bausteinsicht">Bausteinsicht</h1>
+<h2 id="komponentendiagramm-whitebox-gesamtsystem">Komponentendiagramm (Whitebox Gesamtsystem)</h2>
+<img src="http://www.plantuml.com/plantuml/svg/SoWkIImgAStDuUBAoqz9LL0Aoa_ABr5mAqhCJItFByfMKgZcKW023Kq5nm1Fhbgeie3KeZIGkceka51AOabYKc9nga9mOKvcIQenL3WQgYfMGK_F3cg2WfL2QN5gCHP9c5wO0eVKl1IWkm00" alt="uml diagram">
+<p>Siehe auch High-Level-Architektur unter &quot;Technischer Kontext&quot;</p>
+<p><strong>Begründung für diese Darstellungsweise</strong></p>
+<p>Das Komponentendiagramm fasst die wesentlichen Komponenten zusammen.</p>
+<p><strong>Enthaltene Bausteine</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bastein</th>
+<th>Erläuterung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>perfbot</td>
+<td>Perfbot Python-Modul als Blackbox</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Wichtige Schnittstellen</strong></p>
+<table>
+<thead>
+<tr>
+<th>Schnittstelle</th>
+<th>Erläuterung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Datenbank (hier Sqlite3)</td>
+<td>Für die Speicherung der Testläufe wird eine Datenbank genutzt. Hier wird beispielsweise eine Sqlite3-DB unterstützt.</td>
+</tr>
+<tr>
+<td>Robot Framework API</td>
+<td>Die Ausführung des Perfbots wird durch die API des Robot Frameworks getriggert.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="klassendiagramm">Klassendiagramm</h2>
+<img src="http://www.plantuml.com/plantuml/svg/bP8n3u9038Nt-nMNECFYPXmOT3GnahWVHozfKZcy5WRZZnUKGGwGsAL3ttrzzzACnGHfRgIKicIOTV25bzJKc5w06v8hCeeFUXZN45mlE7Vzs1hwY4w-H8SmKGrTRmxlKgPW2SQA_kOmia1b8OVGeeK1CTdK6MaCuGD2hCZlX0BR6PHQiRj_9abiLYqbC1BF0rSN-Z4YzllVwpYMPV3O-u-yAY-W2Pnex-9WTZhlZwN_PGPLsHtD2m00" alt="uml diagram">
+<p><strong>Begründung für diese Darstellungsweise</strong></p>
+<p>Das Klassendiagramm gibt einen detailierten Überblick über die Klassen und damit über die dannach gegliederten Quellcode-Dateien.</p>
+<p><strong>Enthaltene Bausteine</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bastein</th>
+<th>Erläuterung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ResultVisitor</td>
+<td>Teil der Robot-API; ermöglicht das Iterieren über die Testergebnisse vor der Report-Geneneriung</td>
+</tr>
+<tr>
+<td>perfbot</td>
+<td>Wrapper, damit der Aufruf mit dem Parameter --prerebotmodifier perfbot/perfbot.py aufgerufen werden kann. Eigentliche Logik siehe PerfEvalResultModifier.</td>
+</tr>
+<tr>
+<td>PerfEvalResultModifier</td>
+<td>übernimmt die eigentliche Verarbeitungslogik des Perfbots nach dem Aufruf durch rebot.</td>
+</tr>
+<tr>
+<td>PerfEvalVisualizer</td>
+<td>übernimmt die visuelle Aufbereitung z. B. in Box-Plots von Performanzdaten der Testfälle.</td>
+</tr>
+<tr>
+<td>PersistenceService</td>
+<td>Abstrakte Klasse, um die eigentliche Implementierung, wie die Testlaufergebnisse gespeichert bzw. abgerufen werden zu verschleiern.</td>
+</tr>
+<tr>
+<td>Sqlite3PersistenceService</td>
+<td>Konkrete Persistierung der Testergebnisse in einer lokalen Sqlite3-Datei.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="laufzeitsicht">Laufzeitsicht</h1>
+<h2 id="laufzeitsenario-%C3%BCberblick-testausf%C3%BChrung-und-berichtgenierung-im-%C3%BCberblick">Laufzeitsenario Überblick: Testausführung und Berichtgenierung im Überblick</h2>
+<p><img src="res/perfbot_laufzeitsicht_ueberblick.svg" alt="BPMN-Diagramm (Überblick)"></p>
+<p><strong>Begründung für diese Darstellungsweise</strong></p>
+<p>Gibt einen Überblick, wie Perfbot sich in die Kernfunktionen, die das Robot Framework bereitstellt, integriert.</p>
+<h2 id="laufzeitsicht-details-testausf%C3%BChrung-und-berichtgenierung-im-detail">Laufzeitsicht Details: Testausführung und Berichtgenierung im Detail</h2>
+<p><img src="res/perfbot_laufzeitsicht_details.svg" alt="BPMN-Diagramm (Details)"></p>
+<p><strong>Begründung für diese Darstellungsweise</strong></p>
+<p>Zeigt den zeitlichen Ablauf und die Triggerpunkte, wo die verschiedenen Perfbot-Funktionen aufgerufen werden.</p>
+<h1 id="verteilungssicht">Verteilungssicht</h1>
+<ul>
+<li>siehe Kompenentdiagramm oben</li>
+<li>Offenes TODO: Perfbot als PyPI Paket verfügbar zu machen</li>
+</ul>
+<h1 id="architekturentscheidungen">Architekturentscheidungen</h1>
+<p>An dieser Stelle sind die wichtigsten Arhcitektureintscheidungen aufgelistet:</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Zusammenfassung</th>
+<th>Erläuterung/Begründung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADR1</td>
+<td>Integration in rebot-Schritt</td>
+<td>Durch die Anbindung in den Rebot-Schritt erfolgt die Ausführung von Perfbot nachgelagert zur Testausführung. Dadruch werden Seiteneffekte (Verlangsamung oder Fehler) auf die eigentliche TA vermieden. Ein Nachteil ist jedoch, dass damit Erkenntnisse des Testbreakers nicht auf der CLI oder in der output.xml berücksichtigt werden. Alternativ kann jedoch mit <code>rebot</code>auch eine neue aktualisierte <code>output.xml</code>erzeugt werden.</td>
+</tr>
+<tr>
+<td>ADR2</td>
+<td>Integration in die Robot-Reports</td>
+<td>Durch die Integration in die <code>report.html</code>und <code>log.html</code> werden dem Testautomatisierer die Performance-Analyse in die bekannten Ergebnisdateien angezeigt. Er muss keine weiteren Dateien betrachten. Der Gestaltungsfreiraum innerhalb dieser Dokumente ist jedoch dabei etwas beschränkt z. B. können Metadaten-Informationen nur an die Testsuite und nicht an Testfälle gehangen werden. Zudem muss auf den vorhandenen Teststatus-Vorrat (PASS, FAIL, SKIP) für den Testbreaker zurückgegriffen werden.</td>
+</tr>
+<tr>
+<td>ADR3</td>
+<td>Eigene DB statt TestArchiver</td>
+<td>Der TestArchiver bietet ein umfassendes Schema für die Speicherung von Testergebnissen inkl. der automatischen Persisitierung durch einen eigenen Listener. Beim Test dieser Tools musste jedoch festgestellt werden, dass die entscheidenen Tabelle mit den Ergebnissen der Testfälle nicht gefüllt werden. Deshalb wurde für den MVP eine eigenen DB aufgesetzt. Abhängig von den Erweiterungsoptionen sollte jedoch die Nutzung des TestArchivers (z. B. durch einen Fork) geprüft werden.</td>
+</tr>
+<tr>
+<td>ADR4</td>
+<td>Sqlite3 als erste Persistierung</td>
+<td>Für den MVP-Ansatz wurde das Datei-Datenbanksystem Sqlite3 ausgewählt, da es schnell einzurichten ist und das notwendige Python-Modul bereits im Python-Standard-Paket inkludiert ist. Die Erweiterung auf ein &quot;echtes&quot; DBMS wird angestrebt und sollte druch die erweitere Schnittstellendesign problemlos möglich sein.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="qualit%C3%A4tsanforderungen">Qualitätsanforderungen</h1>
+<h2 id="qualit%C3%A4tsbaum">Qualitätsbaum</h2>
+<p>Im der folgenden Grafik - dem sogenannten Qualitätsbaum (englisch: Utitlty Tree) - werden den Qualitätsmerkmalen den die Qualitätsziele (Qx) aus dem ersten Kapitel und die unten beschriebenen Qualitätsszenarien zugeordnet (Mehrfachnennung möglich).</p>
+<img src="http://www.plantuml.com/plantuml/svg/LL0n3eCm4DlpYiniG1-065XOYZeWiLI1fX110ZgI3dqB8p_9nqhIYn2JhJlRftEsQWRQo8badacXNf8j9AALOPFGTjSaYcXXrAZ5hCvHzAHL_CSYO8AO8jwSzSxXFODagkDeSsjQpd9XMhJYaeW9fKkaELT6Vri68nSeoF5KxeIqCHyEaztNLVIdfl7cX-W63iCvzOxwUF4IM6DWxTTsQpbeOFr5OxSua2IGD90RoVXH6TRc-57c3m00" alt="uml diagram">
+<h2 id="qualit%C3%A4tsszenarien">Qualitätsszenarien</h2>
+<p>Konkrete Szenarien werden entweder als Nutzungs-/Anwendungsfall oder als Änderungsszenario, was passiert mit der Qualität bei Weiterentwicklung, angegeben. Die Anfangsbuchstabe der ID soll die Zuorndung zum (am besten passenden) Qualitätsmerkmale verdeutlichen.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Szenario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>Jeder Testausführung wird für die spätere Performance-Analyse archiviert.</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>Die Funktion des Testbreaker lässt sich zeigen, wenn beispielweise ein Sleep in einen Testfall eingebaut wird.</td>
+</tr>
+<tr>
+<td>F3</td>
+<td>Die verschiedenen Testläufe eines Testfalls werden im Box-Plot dargestellt.</td>
+</tr>
+<tr>
+<td>F4</td>
+<td>Die prozentuale Abweichung vom Durchschnitt zu den vergangen Testläufen wird angezeigt.</td>
+</tr>
+<tr>
+<td>B1</td>
+<td>Der Testautomatisierer möchte das Tool ohne umfangreiche Kenntnisse in seinen Testausführungs-CLI-Befehl integrieren.</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Der Testautomatisierer erwartet die Performance-Analyse in den gewohnten Ergebnisdateien.</td>
+</tr>
+<tr>
+<td>K1</td>
+<td>Das Tool stellt keine Anfoderungen oder Änderungen an die beschriebene Testspezifikation (<code>*.robot</code>).</td>
+</tr>
+<tr>
+<td>Z1</td>
+<td>Fehler im Perfbot gefährden nicht die eigentliche Testdurchführung z. B. sollen keine Ergebnisse einer langlaufenden Testsuite aufgrund eines Fehlers im Tool verloren gehen.</td>
+</tr>
+<tr>
+<td>W1</td>
+<td>Ein Entwickler erwartete eine gute Dokumentation und Struktur des Quellcodes bzw. Repos.</td>
+</tr>
+<tr>
+<td>W2</td>
+<td>Der Entwickler erwartet vorhandene Regressionstests und die Nutzung von statischer Codeanalyse.</td>
+</tr>
+<tr>
+<td>Ü1</td>
+<td>Das Tool soll auf einem bestehenden System mit Python/PiP installieren.</td>
+</tr>
+<tr>
+<td>Ü2</td>
+<td>Der Tool soll nicht auf die Testfälle eines Unternehmens beschränkt sein.</td>
+</tr>
+<tr>
+<td>Ü3</td>
+<td>Das Tool ist um andere Persistierungmöglichkeiten z. B. das DBMS MongoDB erweiterbar.</td>
+</tr>
+<tr>
+<td>Ü4</td>
+<td>Die Performance-Analyse kann auch auf Schlüsselwörter (oder andere Objekte) erweitert werden.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="risiken-und-technische-schulden">Risiken und technische Schulden</h1>
+<p>Kernrisiko ist, dass die Lösungsidee bzw. die Prämisse nicht trägt. D. h. dass sich bestehende UI-Tests nicht eignen, um Aussagen über die Performance des Testobjektes zu treffen. Dem Gegenüber steht jedoch die Chance, dass die Lösungsidee trägt. Zudem ist die Überprüfung der Prämisse durch die Entwicklung des Perfbots Teil der Forschungsfrage der Masterthesis.</p>
+<p>Die technischen Schulden der jeweiligen Entscheidungen sind bei den Architekturentscheidungen als Nachteile formuliert (s. o.).</p>
+<h1 id="glossar">Glossar</h1>
+<table>
+<thead>
+<tr>
+<th>Begriff</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-/-</td>
+<td>-/-</td>
+</tr>
+</tbody>
+</table>
+<h1 id="quellen">Quellen</h1>
+<ul>
+<li>diese Markdown-Dokument basiert auf folgender Vorlage:
+<ul>
+<li>Template Version 8.2 DE. (basiert auf AsciiDoc Version), Januar 2023, Created, maintained and © by Dr. Peter Hruschka, Dr. Gernot Starke and contributors. Siehe https://arc42.org.</li>
+</ul>
+</li>
+<li>Deutsches Beispiel für die Arc42-Dokumentation von Stefan Zörner: https://www.dokchess.de</li>
+<li>Merkmale der Produktqualität nach ISO 25010 vgl. Seidl et al., Basiswissen Testautomatisierung, , S. 30</li>
+</ul>
+
+</body>
+</html>
