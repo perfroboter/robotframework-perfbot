@@ -15,7 +15,7 @@ Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet 
 Repo klonen und folgenden Befehl ausführen: 
 ```bash
 python setup.py install
-python3 -m robot --prerebotmodifier perfbot.perfbot:db_path="example/robot-exec-times.db:"keywordstats="True" example/test
+robot --prerebotmodifier perfbot.perfbot:db_path="example/robot-exec-times.db example/test
 ```
 
 ## Quickstart

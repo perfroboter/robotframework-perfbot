@@ -195,7 +195,7 @@ class PerfEvalResultModifier(ResultVisitor):
             isInStats = False
             for ps in perfstats:
                 if ps[1] == t.longname:
-                    joined_test = JoinedPerfTestResult(name=t.name,longname=t.longname,elapsedtime=t.elapsedtime,avg=ps[2],min=ps[3],max=ps[4],count=ps[5],devn=100-ps[2]/t.elapsedtime*100)
+                    joined_test = JoinedPerfTestResult(name=t.name,longname=t.longname,elapsedtime=t.elapsedtime,avg=ps[2],min=ps[3],max=ps[4],count=ps[5],devn=((t.elapsedtime-ps[2])/ps[2])*100)
                     joined_stat_results.append(joined_test)
                     perfstats.remove(ps)
                     isInStats = True
