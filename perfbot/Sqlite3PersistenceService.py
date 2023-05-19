@@ -13,9 +13,10 @@ SQL_INSERT_OR_IGNORE_TESTCASE = "INSERT OR IGNORE INTO testcase (name, longname,
 SQL_INSERT_TESTCASE_RUN = "INSERT INTO testcase_run (testcase_id, test_execution_id, starttime, elapsedtime, status) VALUES ((SELECT id FROM testcase WHERE longname = ?), (SELECT max(id) FROM test_execution), ?, ?,?);"
 SQL_INSERT_OR_IGNORE_KEYWORD = "INSERT OR IGNORE INTO keyword (name, longname, libname) VALUES (?,?,?)"
 SQL_INSERT_KEYWORD_RUN = "INSERT INTO keyword_run (testcase_run_id, keyword_id, starttime, elapsedtime, status, keyword_level, stepcounter, parent_keyword_longname) VALUES ((SELECT max(testcase_run.id) FROM testcase_run INNER JOIN testcase ON testcase_run.testcase_id = testcase.id WHERE testcase.longname =?), (SELECT id FROM keyword WHERE keyword.longname = ?),?,?,?,?,?,?)"
-SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTCASE = "SELECT * FROM testcase_run_view WHERE longname = ?"
+SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTCASE = "SELECT id ,name, longname, starttime , elapsedtime , status FROM testcase_run_view WHERE longname = ?"
 SQL_SELECT_TESTCASE_RUNS_FILTERED_BY_TESTSUITE = "SELECT id ,name, longname, starttime , elapsedtime , status FROM testcase_run_view WHERE longname LIKE ?"
 SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_TESTCASE = "SELECT * FROM keyword_run_view WHERE testcase_longname = ?"
+SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_POSITIONAL_KEYWORD = "SELECT * FROM keyword_run_view WHERE testcase_longname = ? and kw_longname= ? and stepcounter= ?"
 SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_TESTSUITE = "SELECT * FROM keyword_run_view WHERE testcase_longname LIKE ?"
 SQL_SELECT_TESTCASE_RUN_STATS_OF_TESTCASE = "SELECT name, longname, AVG(elapsedtime) as avg, MIN(elapsedtime) as min, MAX(elapsedtime) as max, count(elapsedtime) as count FROM  testcase_run_view WHERE longname = ?"
 SQL_SELECT_TESTCASE_RUN_STATS_OF_TESTSUITE = "SELECT name, longname, AVG(elapsedtime) as avg, MIN(elapsedtime) as min, MAX(elapsedtime) as max, count(elapsedtime) as count FROM (SELECT * FROM testcase_run_view WHERE longname like ? AND status='PASS') AS TEMP GROUP BY longname;"
@@ -95,6 +96,10 @@ class Sqlite3PersistenceService(PersistenceService):
 
     def select_keyword_runs_filtered_by_testname(self, testcase_longname):
         self.cur.execute(SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_TESTCASE, (str(testcase_longname),))
+        return self.cur.fetchall()
+    
+    def select_keyword_runs_filtered_by_positional_keyword(self, testcase_longname, keyword_longname, stepcounter):
+        self.cur.execute(SQL_SELECT_KEYWORD_RUNS_FILTERED_BY_POSITIONAL_KEYWORD, (testcase_longname,keyword_longname, stepcounter))
         return self.cur.fetchall()
 
     def select_keyword_runs_filtered_by_suitename(self, suite_longname):

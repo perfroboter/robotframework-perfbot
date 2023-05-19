@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-      name='robotframework-perfbot',
+      name='perfbot',
       version="0.0.1",
       description='Performance Analysis for Robot Framework',
       long_description='Performance Analysis for Robot Framework',
@@ -29,7 +29,7 @@ setup(
       ],
       entry_points={
           'console_scripts': [
-              'perfbot=perfbot.perfbot:main',
+              'perfbot=perfbot.perfbot:main'
           ]
       },
       test_suite="perfbot.tests",

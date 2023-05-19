@@ -81,7 +81,6 @@ Die Integration in das Robot Framework ist die wesentliche Technologieentscheidu
 ## Komponentendiagramm (Whitebox Gesamtsystem) 
 
 ```plantuml
-@startuml
 
 node "Robot Framework" {
     () API
@@ -91,15 +90,14 @@ node Perfbot {
 
 }
 
-[Perfbot] ..> () API : uses
-
-[Perfbot] ..> () Sqlite3 : uses
-
 database Sqlite3 {
 
 }
 
-@enduml
+[Perfbot] ..> () API : uses
+
+[Perfbot] ..> () Sqlite3 : uses
+
 ```
 
 Siehe auch High-Level-Architektur unter "Technischer Kontext"
@@ -125,6 +123,8 @@ Robot Framework API        | Die Ausführung des Perfbots wird durch die API des
 ## Klassendiagramm
 
 ```plantuml
+
+
 class robot.api.ResultVisitor 
 class perfbot.PerfEvalResultModifier 
 class perfbot.perfbot #DDDDDD
@@ -140,6 +140,7 @@ perfbot.PerfEvalResultModifier o-- perfbot.PerfEvalVisualizer
 perfbot.PersistenceService <|-- perfbot.Sqlite3PersistenceService
 
 note left of perfbot.perfbot: Starter
+
 ```
 
 **Begründung für diese Darstellungsweise**
@@ -228,7 +229,6 @@ Im der folgenden Grafik - dem sogenannten Qualitätsbaum (englisch: Utitlty Tree
 ***_ Ü2
 ***_ Ü3
 ***_ Ü4
-
 @endmindmap
 ```
 
