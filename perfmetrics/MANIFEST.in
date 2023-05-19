@@ -1,2 +1,0 @@
-recursive-include robotframework_metrics/templates *
-include MANIFEST.in
