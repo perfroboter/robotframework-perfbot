@@ -13,8 +13,8 @@ setup(
       keywords='robotframework performance',
       author='Lennart Potthoff',
       author_email='git@circuit-break.in',
-      url='https://git.fh-muenster.de/lennarts-master-thesis/robot-execution-time',
-     license = 'Apache License 2.0',
+      url='https://git.fh-muenster.de/robotframework-performance/perfbot',
+     license = 'MIT',
       
       packages=find_packages(),
       include_package_data= True,
