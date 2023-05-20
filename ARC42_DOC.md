@@ -256,7 +256,7 @@ W2  | Der Entwickler erwartet vorhandene Regressionstests und die Nutzung von st
 
 ### Tests
 
-Die Qualität wird mittels automatisierten Regressionstests laufend betrachtet. Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](perfbot/tests/Testplan.md).
+Die Qualität wird mittels automatisierten Regressionstests laufend betrachtet. Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](tests/Testplan.md).
 
 
 # Risiken und technische Schulden

@@ -117,7 +117,7 @@ Quelle der Tabelle: [Wikipedia](https://de.wikipedia.org/wiki/Box-Plot) [Seaborn
 ## Technische Dokumentation 
 
 Für weitere Details u. a. den architektonischen Aufbau siehe [ARC42_DOC.md](ARC42_DOC.md).
-Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](perfbot/tests/Testplan.md).
+Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](tests/Testplan.md).
 
 ## Quellen
 Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgegriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgenden eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
