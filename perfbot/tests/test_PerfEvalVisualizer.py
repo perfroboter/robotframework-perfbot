@@ -16,9 +16,9 @@ class TestSqlite3PersistenceService(unittest.TestCase):
                     (2," Valid Login", "Tests.Valid Login.Valid Login", "20230427 09:59:04.598",3730,"PASS")]
 
     def tearDown(self):
-      #  folder = os.path.dirname(__file__) + "/" + self.NAME_OF_TEST_BOXPLOT_FOLDER
-      #  Remove folder
-        pass
+      # folder = os.path.dirname(__file__) + "/" + self.NAME_OF_TEST_BOXPLOT_FOLDER
+      # Remove folder
+      pass
 
     def test_boxplot(self):
         hist = pd.DataFrame(self.hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)

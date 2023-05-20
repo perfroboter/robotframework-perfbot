@@ -5,14 +5,14 @@
 
 ---
 
-**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Es erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse werden in die Robot-Testresults (`log.html` / `report.html`) integriert.
+**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Das Werkzeug erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse wird in die Robot-Testresults (`log.html` / `report.html`) integriert.
 
 
 ## Installation
 
 Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
 
-Repo klonen und folgenden Befehl ausführen: 
+Repository klonen und folgenden Befehl ausführen: 
 ```bash
 python setup.py install
 robot --prerebotmodifier perfbot.perfbot:db_path="example/robot-exec-times.db example/test
@@ -28,9 +28,9 @@ robot robot --prerebotmodifier perfbot.perfbot [path to tests]
 
 **Perfbot** nutzt den `ResultVisitor` der Robot-API, um über die Tests bzw. deren Ergebnisse zu iterieren und diese in einer Datenbank abzuspeichern. Basierend auf den vergangen Testläufen aus der Datenbank werden die aktuellen Laufzeit der Tests Suite-weise analysiert und das Ergebnis als Metadaten in die Report- bzw. Log-Datei geschrieben. 
 Folgende weitere Funktionen stehen zur Verfügung:
-- **Box-Plot** (standardmäßig aktiviert): Zu jedem Testfall wird ein [Box-Plot](https://de.wikipedia.org/wiki/Box-Plot) generiert, der die statistische Verteilung der Laufzeiten in Quartile grafisch aufbereit. Die aktuelle Ausführungszeit des Tests wird mit dem Punkt makiert. Die Box-Plot-Erstellung kann aufgrund ihrer teils langlaufenden Erstellung deaktiviert werden (siehe Konfiguration).
-- **Testbreaker** (standardmäßig deaktiviert, Aktivierung siehe Konfiguration): Der Testbreaker vergleicht die Testdauer jedes Testfalls mit einer Maximalwert der prozentualen Abweichungen vom Durchschnitt der letzten Läufe. Lässt sich daraus ein Performanzproblem erkennen, so wir der Testfall auf FAIL gesetzt.
-- **Keyword-Analyse** (standmäßig aktiviert, in Entwicklung): Neben den Laufzeiten der Testfälle, sind auch die Laufzeiten der darunter liegenden Keywords interessant. Dafür werden auch diese Laufzeiten in der Datenbank gespeichert. Zur Betrachtung der Keyword-Laufzeiten ist die Erzeugung einer seperaten HTML-Datei basierend auf [robotmetrics](https://github.com/adiralashiva8/robotframework-metrics) in Entwicklung.
+- **Box-Plot** (standardmäßig aktiviert): Zu jedem Testfall wird ein [Box-Plot](https://de.wikipedia.org/wiki/Box-Plot) generiert, der die statistische Verteilung der Laufzeiten in Quartile grafisch aufbereitet. Die aktuelle Ausführungszeit des Tests wird mit dem Punkt markiert. Die Box-Plot-Erstellung kann aufgrund ihrer teils langlaufenden Erstellung deaktiviert werden (siehe Konfiguration).
+- **Testbreaker** (standardmäßig deaktiviert, Aktivierung siehe Konfiguration): Der Testbreaker vergleicht die Testdauer jedes Testfalls mit einem Maximalwert der prozentualen Abweichungen vom Durchschnitt der letzten Läufe. Lässt sich daraus ein Performanceproblem erkennen, so wir der Testfall auf FAIL gesetzt.
+- **Keyword-Archivierung** (standardmäßig aktiviert, in Entwicklung): Neben den Laufzeiten der Testfälle, sind auch die Laufzeiten der darunter liegenden Keywords interessant. Dafür werden auch diese Laufzeiten in der Datenbank gespeichert. Zur Betrachtung der Keyword-Laufzeiten wurde eine weiteres Tool namens [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics). Diese ermöglicht eine detailerte Betrachtung der Performance von Test- und Schlüsselwörtern.
 
 ## Konfiguration
 
@@ -39,7 +39,7 @@ Starten der Robot-Testfälle inkl. perfbot (standardmäßig mit Box-Plot-Modus u
 robot --prerebotmodifier perfbot.perfbot [path to tests]
 ```
 
-Angabe, welche [Sqlite3-Datenbank](https://docs.python.org/3/library/sqlite3.html) mit archiverten Testlaufzeiten genutzt werden soll (standardmäßig wird eine Datenbank mit dem Namen `robot-exec-times.db` erzeugt bzw. verwendet):
+Angabe, welche [Sqlite3-Datenbank](https://docs.python.org/3/library/sqlite3.html) mit archivierten Testlaufzeiten genutzt werden soll (standardmäßig wird eine Datenbank mit dem Namen `robot-exec-times.db` erzeugt bzw. verwendet):
 ```bash
 robot --prerebotmodifier perfbot.perfbot:db_path=[path to sqlite3 file] [path to tests]
 ```
@@ -62,8 +62,8 @@ Um lediglich die Performance zu analyisieren, jedoch nicht den aktuellen Testlau
 robot --prerebotmodifier perfbot.perfbot:readonly=True [path to tests]
 ```
 
-Deaktivierung der Keyword-Speicherung zur späteren Analyse: 
-Die Keyword-Analyse erfolgt nach gelagert (siehe oben). Sofern die Betrachtung der Keywords nicht relevant ist, kann zugunsten eines schnellern Perfbots die Speicherung der Keyword-Laufzeiten deaktiviert werden:
+Deaktivierung der Keyword-Speicherung: 
+Die Keyword-Analyse erfolgt nach gelagert mittels [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) (siehe oben). Sofern die Betrachtung der Keywords nicht relevant ist, kann zugunsten eines schnelleren Perfbots die Speicherung der Keyword-Laufzeiten deaktiviert werden:
 ```bash
 robot --prerebotmodifier perfbot.perfbot:keywordstats=False [path to tests]
 ```
@@ -92,18 +92,34 @@ python example/sut/server.py
 # 2. Ausführung der Tests inkl. Perfbot
 robot --prerebotmodifier perfbot.perfbot:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True example/tests
 ```
-Screenshot 1: Einbindung der Performance-Analyse in die Log-Dateiund die Funktionsweise der Testbreakers aussehen sollen:
+Screenshot 1: Einbindung der Performance-Analyse in die Log-Datei:
 ![](res/example-test-suite-summary.png)
 
 Screenshot 2: Testbreaker in Aktion am Beispiel des Beispiels Login-Page
 ![](res/example-testbreaker.png)
+
+## Box-Plot-Legende
+
+<img src="res/legende.png" width="600">
+
+| Kennwert | Beschreibung | Lage im Box-Plot
+|--|--|--
+| Unteres Quartil | Die kleinsten 25 % der Datenwerte sind kleiner als dieser oder gleich diesem Kennwert | Beginn der Box
+| Median | Die kleinsten 50 % der Datenwerte sind kleiner als dieser oder gleich diesem Kennwert | Strich innerhalb der Box
+| Oberes Quartil | Die kleinsten 75 % der Datenwerte sind kleiner als dieser oder gleich diesem Kennwert | Ende der Box
+| Antenne (Whisker) | Bis 1,5-facher Interquartilabstand (Länge der Box) werden auf beiden Seiten die Antennen dargestellt. | Antennen
+| Ausreißer | Alle Punkte außerhalb der Antennen | Einzelne Punkte (Raute)
+| Einzelwerte | Alle Einzelwerte werden als Punktwolke dargestellt. | Punktwolke (rund/grau)
+| Aktuelle Wert | Laufzeit in der gerade betrachteten Testlauf. | oranger Punkt
+
+Quelle der Tabelle: [Wikipedia](https://de.wikipedia.org/wiki/Box-Plot) [Seaborn-Docs](https://seaborn.pydata.org/generated/seaborn.boxplot.html)
 
 ## Technische Dokumentation 
 
 Für weitere Details u. a. den architektonischen Aufbau siehe [ARC42_DOC.md](ARC42_DOC.md).
 
 ## Quellen
-Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgeriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgendenen eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
+Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgegriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgenden eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
 
 -   [Robot Framework User Guide](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html) Version 6.0.2, insbesondere:
     - Kapitel *4.3 Listener interface* und zugehöriger Unterpunkt *Modifying execution and results*
@@ -116,11 +132,12 @@ Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Techno
     - [Pandas](https://pandas.pydata.org/docs/)
     - [Matplotlib](https://matplotlib.org/stable/index.html)
     - [Sqlite3](https://docs.python.org/3/library/sqlite3.html)
+    - [Seaborn](https://seaborn.pydata.org)
     - Python3 (allgemein): [PythonDocs](https://docs.python.org/3/),[Python3 - Ein umfassende Handbuch](https://openbook.rheinwerk-verlag.de/python/),[W3Schools](https://www.w3schools.com/python/default.asp), [Pythonbuch](https://pythonbuch.com)
 - das Logo von Perfbot basiert auf dem [Robot Framework logo](https://github.com/robotframework/visual-identity) und ist damit unter  [Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/) lizensiert
 
 ## Lizenz
-© Lennart Potthoff TODO: Mögliche Veröffentlichung und Lizensierung als OpenSource erfolgt nach Abgabe der Thesis
+© Lennart Potthoff / MIT-Lizenz
 
 ## Schlussbemerkung
 Perfbot wurde im Rahmen einer Masterthesis erstellt:  

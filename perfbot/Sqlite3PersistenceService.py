@@ -64,8 +64,8 @@ class Sqlite3PersistenceService(PersistenceService):
 
     def insert_keyword_run(self, keywordrun: Keywordrun):
         #TODO: Voraussetzung: letzter Testlauf des Testfall ist geinserted und hat höchste ID
-        self.cur.execute(SQL_INSERT_OR_IGNORE_KEYWORD, (keywordrun.name, keywordrun.longname, keywordrun.libname));
-        self.cur.execute(SQL_INSERT_KEYWORD_RUN, (keywordrun.testcase_longname,keywordrun.longname,keywordrun.starttime,keywordrun.elapsedTime,keywordrun.status, keywordrun.keyword_level,keywordrun.counter,keywordrun.parent_keyword_longname));
+        self.cur.execute(SQL_INSERT_OR_IGNORE_KEYWORD, (keywordrun.name, keywordrun.longname, keywordrun.libname))
+        self.cur.execute(SQL_INSERT_KEYWORD_RUN, (keywordrun.testcase_longname,keywordrun.longname,keywordrun.starttime,keywordrun.elapsedTime,keywordrun.status, keywordrun.keyword_level,keywordrun.counter,keywordrun.parent_keyword_longname))
         self.con.commit()
 
     def insert_multiple_keyword_runs(self, keywordruns):

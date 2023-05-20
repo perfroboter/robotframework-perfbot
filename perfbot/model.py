@@ -32,14 +32,6 @@ class Testrun(NamedTuple):
     elapsedtime: any
     status: any
 
-    #def __init__(self, name: str, longname:str , starttime: str, elapsedtime: int, status: str):
-    #    #name, longname, starttime, elapsedTime, status
-    #    self.name = name
-    #    self.longname = longname
-    #    self.starttime = starttime
-    #    self.elapsedtime = elapsedtime
-    #    self.status = status
-
     @staticmethod
     def from_robot_testCase(test: TestCase):
         """Möglichkeit der Erzeugung basierend auf dem Robot-Datenmodell
@@ -76,8 +68,6 @@ class StoredTestrun(Testrun):
     id: any
 
     
-
-
 class TestPerfStats:
     """Stellt Statistikkennzahlen eines Testfalls dar. Die Kennzahlen fassen i. d. R. mehrere Tetläufe des Testfalls zusammen.
         Die Testdaten 

@@ -12,10 +12,18 @@ class PerfEvalVisualizer:
     :rtype: _type_
     """
 
-    def __init__(self, boxplot_folder):
+    def __init__(self, boxplot_folder=None):
         self.boxplot_folder = boxplot_folder
 
     def generate_boxplot_of_tests(self, hist_tests, act_tests):
+        """Wrapper zum Aufruf von :py:meth:`~PerfEvalVisualizer.generate_boxplot()`.
+        :param hist_tests: historische Daten als Liste
+        :type hist_tests: list
+        :param act_tests: aktuelle Daten als list
+        :type act_tests: list
+        :return: Pfad zur Bilddatei
+        :rtype: str
+        """
         hist = pd.DataFrame(hist_tests, columns =["id" ,"name", "longname", "starttime" , "elapsedtime" , "status"], copy=True)
 
         t_list = []
@@ -31,6 +39,28 @@ class PerfEvalVisualizer:
         return self.generate_boxplot(hist, act, format="png")
 
     def generate_boxplot(self, hist_results: pd.DataFrame, act_results: pd.DataFrame, x="elapsedtime", y='name', xlabel="Duration (s)",ylabel="Testcase", heading='Box-Plot of the test duration times', format="svg"):
+        """Generische Generation des Boxplots aus pd.DataFrames.
+           Kontrekt wird ein Box-Plot erzeugt, darauf eine Punktwolke aller Werte und durch einen orangen Punkt die aktuelle Laufzeit.
+
+        :param hist_results: Historische Daten aus denen der Boxplot generiert wird
+        :type hist_results: pd.DataFrame
+        :param act_results: Aktuelle Daten, die aktuelle Laufzeit im Boxplot makieren
+        :type act_results: pd.DataFrame
+        :param x: Spaltenname der x-Achse in den DataFrames, defaults to "elapsedtime"
+        :type x: str, optional
+        :param y: Spaltenname der y-Achse in den DataFrames, defaults to 'name'
+        :type y: str, optional
+        :param xlabel: Beschriftung der x-Achse, defaults to "Duration (s)"
+        :type xlabel: str, optional
+        :param ylabel: Beschriftung der y-Achse, defaults to "Testcase"
+        :type ylabel: str, optional
+        :param heading: Titel, defaults to 'Box-Plot of the test duration times'
+        :type heading: str, optional
+        :param format: Dateformat, ob ein Pfad zur Bilddatei oder ein SVG als String zurückgegeben wird, defaults to "svg"
+        :type format: str, optional
+        :return: Pfad zur Bilddatei oder SVG-String
+        :rtype: str
+        """
         sns.set_theme(style="whitegrid", context="notebook")
         hist = pd.DataFrame(hist_results, copy=True)
         hist[x] = hist[x].astype(int) / 1000
@@ -43,8 +73,6 @@ class PerfEvalVisualizer:
         
         sns.stripplot(ax=boxplot,x=x, y=y, data=hist, color="grey")
 
-        # Die Makierung der aktuellen Laufzeiten funktioniert nicht bzw. irgendwie werden die Figures dann doppelt referenziert...
-        # Fehler gefunden: Timestamp %f wird nicht ausgefüllt
         if True:
             act = pd.DataFrame(act_results, copy=True)
             act[x] = act[x].astype(int) / 1000

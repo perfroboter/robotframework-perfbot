@@ -1,11 +1,9 @@
 # see https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#toc-entry-532
 from robot.api import ResultVisitor
 from robot.api.logger import info, debug, trace, console   
-import json, os
-import sqlite3
-import time
+import os
 from datetime import datetime
-from robot.result.model import TestCase, TestSuite, Body, Keyword
+from robot.result.model import TestSuite, Body, Keyword
 from .PersistenceService import PersistenceService
 from .Sqlite3PersistenceService import Sqlite3PersistenceService
 from .PerfEvalVisualizer import PerfEvalVisualizer
@@ -14,11 +12,11 @@ from typing import List
 
 # Constants
 DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS = 1.0 
-DEFAULT_LAST_N_RUNS = None # TODO: Support limit
-DEFAULT_DATABASE_TECHNOLOGY = "sqlite3" #TODO: Support different persistence modes
+DEFAULT_LAST_N_RUNS = None
+DEFAULT_DATABASE_TECHNOLOGY = "sqlite3" 
 DEFAULT_DATABASE_PATH = "robot-exec-times.db"
 DEFAULT_BOXPLOT_FOLDER_REL_PATH = "perfbot-graphics/"
-DEFAULT_STAT_FUNCTION = "avg" #TODO: Support different stat functions
+DEFAULT_STAT_FUNCTION = "avg" 
 TEXT_PERF_ANALYSIS_TABLE_HEADING = "*Summary of Tests Performance*\n\n| =Testcase= |  =Elapsed=  | =Avg= | =Min= | =Max= | =Evaluated test runs= | =Deviation from avg= |\n"
 TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n" 
 TEXT_PERF_ANALYSIS_BOXPLOT = ""
@@ -57,9 +55,15 @@ class PerfEvalResultModifier(ResultVisitor):
         :type db_path: str, optional
         :param boxplot: Angabe, ob die Historie der Testlaufzeiten in einem Boxplot grafisch aufbereitet werden soll, defaults to True
         :type boxplot: bool, optional
-        :param testbreaker: Angabe, ob Testfälle bei schlechter Performanz (abhängig von devn) auf FAIL gesetzt werden sollen, defaults to False
+        :param boxplot_folder: Ordner, wo die referenzierten Bilder abliegen, defaults to DEFAULT_BOXPLOT_FOLDER_REL_PATH
+        :type boxplot_folder: str, optional
+         :param testbreaker: Angabe, ob Testfälle bei schlechter Performanz (abhängig von devn) auf FAIL gesetzt werden sollen, defaults to False
         :type testbreaker: bool, optional
-        :raises NotImplementedError: Einige Parameter (stat_func, last_n_runs, db) sind nur mit default-Werten zulässig und somit nicht veränderbar.
+        :param readonly: Angabe, ob nur lesend auf die persitierten Daten zugegriffen werden soll, defaults to False
+        :type readonly: bool, optional
+        :param keywordstats: Angabe, ob die Schlüsselwort-Ebene persistiert werden soll, defaults to True
+        :type keywordstats: bool, optional
+         :raises NotImplementedError: Einige Parameter (stat_func, last_n_runs, db) sind nur mit default-Werten zulässig und somit nicht veränderbar.
         """
         self.stat_func = stat_func
         if not self.stat_func == DEFAULT_STAT_FUNCTION:
@@ -98,7 +102,7 @@ class PerfEvalResultModifier(ResultVisitor):
 
         - Wegschreiben der Ausführungsergebnisse aller Tests der Testsuite
         - Performanzstatiskten abrufen und für HTML aufbereiten
-        -  optional: weitere Daten für Boxplot holen und Boxplot genieren
+        - weitere Daten für Boxplot holen und Boxplot genieren
 
 
         :param suite: übergebene TestSuite inkl. aller Tests
@@ -131,6 +135,7 @@ class PerfEvalResultModifier(ResultVisitor):
     def visit_test(self, test):
         """Geerbte Methode aus robot.api.ResultVisitor wird an dieser Stelle überschrieben, 
         um im Testbreaker-Modus die Testfälle bei schlechter Performanz auf FAIL zu setzen.
+        Zudem wird über alle Keywords traversiert und ihre Laufzeiten gebündelt archiviert.
 
         :param test: übergebener Testfall
         :type test: TestCase (siehe robot.api)
@@ -162,8 +167,22 @@ class PerfEvalResultModifier(ResultVisitor):
             self.persistenceService.insert_multiple_keyword_runs(self.body_items_of_test)
 
       
-    def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, counter: int, stoplevel=None):
-        
+    def _recursive_keywords_traversal(self, bodyItem: Body, testcase_longname: str, level: int, counter: int):
+        """Rekursiver Besuch aller Schlüsselwörter druch Pre-Order Traversal.
+           Besuchte Schlüsselwörter werden in einer globalen Liste gechacht, bevor sie in die persistiert werden. 
+
+        :param bodyItem: i. d. R. das eigentliche Schlüsselwort
+        :type bodyItem: Body
+        :param testcase_longname: Testfall im Rahmen dessen dieser Schlüsselwort aufgerufen wurde.
+        :type testcase_longname: str
+        :param level: Baumtiefe (dient später zur Unterscheidung zwischen High- und Low-Level-Keywords)
+        :type level: int
+        :param counter: Nummer des Elternkontens im Pre-Order
+        :type counter: int
+        :return: liefert die neue Nummer gemäß Pre-Order
+        :rtype: int
+        """
+
         if isinstance(bodyItem,Keyword):
             level+=1
             counter+=1

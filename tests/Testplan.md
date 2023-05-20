@@ -2,7 +2,7 @@
 
 ## Teststrategie
 
-Die Qualität von Perfbot soll einerseits durch statsiche und dynamische Tests beurteilt werden. Alle Tests sind dabei automatisiert, um bei jeder Änderung die Regressionstestsuite (Unit- und Integrationstests) durchzuführen.
+Die Qualität von Perfbot soll einerseits durch statische und dynamische Tests beurteilt werden. Alle Tests sind dabei automatisiert, um bei jeder Änderung die Regressionstestsuite (Unit- und Integrationstests) durchzuführen.
 
 ## Statische Code-Analyse
 
@@ -16,7 +16,7 @@ Je komplexer der Code, desto mehr Unit-Tests.
 
 ## Unittests
 
-Der Pythoncode wird mittels Unittests (Python-Modul `unittest`) getestet. Für jede Klasse sind dabei Tests abgelegt.
+Der Pythoncode wird mittels Unittests (Python-Modul `unittest`) getestet. Die Tests sind entsprechend der Python-Klassen im Ordner `perfbot\tests` abgelegt.
 
 ```bash
 python3 -m setup.py install #Ggf. erst neu bauen
@@ -26,7 +26,7 @@ python3 -m setup.py test
 ## Integrationstest (Smoke-Test)
 
 Der Integrationstest im Sinne eines Smoke-Tests führt die Robot-Testfälle des Selenium-Beispiels (`example`) inkl. Ausführung von Perfbot durch und prüft im Anschluss, ob in der `log.html` die Informationen von Perfbot zu finden sind.
-Dabei werden drei Durchläufe gemacht, um sowohl die initale Anlage der Datenbank, als auch den Rückgriff auf historischen Daten zu prüfen.
+Dabei werden drei Durchläufe gemacht, um sowohl die initiale Anlage der Datenbank, als auch den Rückgriff auf historischen Daten zu prüfen.
 
 ```bash
 # Ausführung aus Root-Ordner des Repos, damit Pfade im Skript korrekt sind

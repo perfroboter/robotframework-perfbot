@@ -4,11 +4,11 @@
 
 ## Aufgabenstellung
 
-**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Es erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse werden in die Robot-Testresults (`log.html` / `report.html`) integriert.
+**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Er erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse wird in die Robot-Testresults (`log.html` / `report.html`) integriert.
 
 ## Qualitätsziele
 
-Hier sind die wichtigsten Qualitätsziele beschrieben. Eine detailierte Betrachtung der Qualität erfolgt im Kapitel Qualitätsanforderungen (s. u.).
+Hier sind die wichtigsten Qualitätsziele beschrieben. Eine detaillierte Betrachtung der Qualität erfolgt im Kapitel Qualitätsanforderungen (s. u.).
 
 ID | Qualitätsziel                                                                      | Motivation und Erläuterung 
 ---|---------------------------------------------------------------------------------- | ---------------------------------------------- 
@@ -21,8 +21,8 @@ Q3 | Performantes Tool ohne Verlangsamung der eigentlichen Testausführung (Perf
 
 Rolle                      | Erwartungshaltung
 ---------------------------|-----------------------
-Testautomatisierer         | möchte Hinweise zur Performance der Testfälle bzw. über Performance-Veränderungen des Testobjektes; erwaret eine einfache Integration in sein bisheriges Robot-Setup
-Entwicklungsteam           | möchte Performance-Probleme frühzeit entdecken; erhofft sich detailierte Infos an welcher Komponente die Performance schlechter ist
+Testautomatisierer         | möchte Hinweise zur Performance der Testfälle bzw. über Performance-Veränderungen des Testobjektes; erwartet eine einfache Integration in sein bisheriges Robot-Setup
+Entwicklungsteam           | möchte Performance-Probleme frühzeit entdecken; erhofft sich detaillierte Infos an welcher Komponente die Performance schlechter ist
 Anwendungsverantwortlicher (Auftraggeber) | möchte frühzeit über Performance-Probleme in Kenntnis gesetzt werden; möchte Nachweis über Performance des Anwendung
 Testmanagement / TA-Team   | möchte das Qualitätsziel "Performance" im Unternehmen stärker in den Fokus setzen; möchte mit reduziertem Aufwand die funktionalen Tests um nicht-funktionale Kennzahlen erweitern
 Forscher (Masterarbeit) | möchte beurteilen, ob Kennzahlen zu bestehender UI-Tests brauchbar sind, um Aussagen über die Performance eines Testobjekts zu treffen      
@@ -62,7 +62,7 @@ Das Tool `Perfbot` (orange) integriert sich auf der Testausführungsschicht (sch
 
 # Lösungsstrategie 
 
-Die grundlegende Lösungsidee zur Performance-Anaylse unter Nutzung bestehender UI-Tests ist folgende: Eine generische Erweiterung des im Unternehmen verbreiteten Testautomatisierungswerkzeugs Robot Frameworks zu schaffen. Dadurch sollen Synergieeefekte durch Nutzung bestehender Testfälle und dem bestehenden Knowhow der Testautomatisierer gehoben werden.
+Die grundlegende Lösungsidee zur Performance-Analyse unter Nutzung bestehender UI-Tests ist folgende: Eine generische Erweiterung des im Unternehmen verbreiteten Testautomatisierungswerkzeugs Robot Frameworks zu schaffen. Dadurch sollen Synergieeffekte durch Nutzung bestehender Testfälle und dem bestehenden Knowhow der Testautomatisierer gehoben werden.
 Konkret liegt beim Performance-Vergleich folgende Umsetzungsidee vor:
  - speichern der Test-Laufzeiten in einer Datenbank
  - vergleichen der aktuellen Laufzeit mit den archivierten Laufzeiten der Vergangenheit
@@ -71,9 +71,9 @@ Konkret liegt beim Performance-Vergleich folgende Umsetzungsidee vor:
 Die Performance-Analyse soll durch die drei folgenden wichtigsten Funktionen erfolgen:
     - Vergleichskennzahlen: Tabellarische Darstellung verschiedene Kennzahlen (Minimum, Maximum, Durchschnitt, Abweichung vom Durchschnitt) zur früheren Laufzeiten
     - Box-Plot: grafische Aufbereitung der Laufzeiten der Vergangenheit zu jedem Testfall
-    - Testbreaker: Testfälle werden als fehlerhaft makiert, wenn ein Schwellwert zu Abweichung von vergangen Test-Laufzeiten überschritten wird.
+    - Testbreaker: Testfälle werden als fehlerhaft markiert, wenn ein Schwellwert zu Abweichung von vergangen Test-Laufzeiten überschritten wird.
 
-Die Integration in das Robot Framework ist die wesentliche Technologieentscheidung, dadruch kann die bestehende API des Robot Frameworks genutzt werden. Gleichzeitig schafft dies auch eine klare Abhängigkeit zum Framework und gewisse Technologievorgaben z. B. die Nutzung von Python als Programmiersprache sind damit vorbestimmt.
+Die Integration in das Robot Framework ist die wesentliche Technologieentscheidung, dadurch kann die bestehende API des Robot Frameworks genutzt werden. Gleichzeitig schafft dies auch eine klare Abhängigkeit zum Framework und gewisse Technologievorgaben z. B. die Nutzung von Python als Programmiersprache sind damit vorbestimmt.
 
 
 # Bausteinsicht 
@@ -145,16 +145,16 @@ note left of perfbot.perfbot: Starter
 
 **Begründung für diese Darstellungsweise**
 
-Das Klassendiagramm gibt einen detailierten Überblick über die Klassen und damit über die dannach gegliederten Quellcode-Dateien. 
+Das Klassendiagramm gibt einen detaillierten Überblick über die Klassen und damit über die danach gegliederten Quellcode-Dateien. 
 
 **Enthaltene Bausteine**
 
 Bastein                    | Erläuterung
 ---------------------------|-----------------------
-ResultVisitor              | Teil der Robot-API; ermöglicht das Iterieren über die Testergebnisse vor der Report-Geneneriung
-perfbot                    | Wrapper, damit der Aufruf mit dem Parameter --prerebotmodifier perfbot/perfbot.py aufgerufen werden kann. Eigentliche Logik siehe PerfEvalResultModifier.
+ResultVisitor              | Teil der Robot-API; ermöglicht das Iterieren über die Testergebnisse vor der Report-Generierung
+perfbot                    | Wrapper, damit der Aufruf mit dem Parameter --prerebotmodifier perfbot.perfbot aufgerufen werden kann. Eigentliche Logik siehe PerfEvalResultModifier.
 PerfEvalResultModifier     |  übernimmt die eigentliche Verarbeitungslogik des Perfbots nach dem Aufruf durch rebot.
-PerfEvalVisualizer         | übernimmt die visuelle Aufbereitung z. B. in Box-Plots von Performanzdaten der Testfälle.
+PerfEvalVisualizer         | übernimmt die visuelle Aufbereitung z. B. in Box-Plots von Performancedaten der Testfälle.
 PersistenceService         | Abstrakte Klasse, um die eigentliche Implementierung, wie die Testlaufergebnisse gespeichert bzw. abgerufen werden zu verschleiern.
 Sqlite3PersistenceService  | Konkrete Persistierung der Testergebnisse in einer lokalen Sqlite3-Datei.
 
@@ -169,7 +169,7 @@ Sqlite3PersistenceService  | Konkrete Persistierung der Testergebnisse in einer 
 
 Gibt einen Überblick, wie Perfbot sich in die Kernfunktionen, die das Robot Framework bereitstellt, integriert.
 
-## Laufzeitsicht Details: Testausführung und Berichtgenierung im Detail
+## Laufzeitsicht Details: Testausführung und Berichtgenerierung im Detail
 
 ![BPMN-Diagramm (Details)](res/perfbot_laufzeitsicht_details.svg)
 
@@ -185,14 +185,14 @@ Zeigt den zeitlichen Ablauf und die Triggerpunkte, wo die verschiedenen Perfbot-
 
 # Architekturentscheidungen
 
-An dieser Stelle sind die wichtigsten Arhcitektureintscheidungen aufgelistet:
+An dieser Stelle sind die wichtigsten Architekturentscheidungen aufgelistet:
 
 ID   | Zusammenfassung                       | Erläuterung/Begründung 
 -----|-------------------------------------- | ---------------------------------------------- 
-ADR1 | Integration in rebot-Schritt          | Durch die Anbindung in den Rebot-Schritt erfolgt die Ausführung von Perfbot nachgelagert zur Testausführung. Dadruch werden Seiteneffekte (Verlangsamung oder Fehler) auf die eigentliche TA vermieden. Ein Nachteil ist jedoch, dass damit Erkenntnisse des Testbreakers nicht auf der CLI oder in der output.xml berücksichtigt werden. Alternativ kann jedoch mit `rebot`auch eine neue aktualisierte `output.xml`erzeugt werden.
+ADR1 | Integration in rebot-Schritt          | Durch die Anbindung in den Rebot-Schritt erfolgt die Ausführung von Perfbot nachgelagert zur Testausführung. Dadurch werden Seiteneffekte (Verlangsamung oder Fehler) auf die eigentliche TA vermieden. Ein Nachteil ist jedoch, dass damit Erkenntnisse des Testbreakers nicht auf der CLI oder in der output.xml berücksichtigt werden. Alternativ kann jedoch mit `rebot`auch eine neue aktualisierte `output.xml`erzeugt werden.
 ADR2 | Integration in die Robot-Reports      | Durch die Integration in die `report.html`und `log.html` werden dem Testautomatisierer die Performance-Analyse in die bekannten Ergebnisdateien angezeigt. Er muss keine weiteren Dateien betrachten. Der Gestaltungsfreiraum innerhalb dieser Dokumente ist jedoch dabei etwas beschränkt z. B. können Metadaten-Informationen nur an die Testsuite und nicht an Testfälle gehangen werden. Zudem muss auf den vorhandenen Teststatus-Vorrat (PASS, FAIL, SKIP) für den Testbreaker zurückgegriffen werden.
-ADR3 | Eigene DB statt TestArchiver          | Der TestArchiver bietet ein umfassendes Schema für die Speicherung von Testergebnissen inkl. der automatischen Persisitierung durch einen eigenen Listener. Beim Test dieser Tools musste jedoch festgestellt werden, dass die entscheidenen Tabelle mit den Ergebnissen der Testfälle nicht gefüllt werden. Deshalb wurde für den MVP eine eigenen DB aufgesetzt. Abhängig von den Erweiterungsoptionen sollte jedoch die Nutzung des TestArchivers (z. B. durch einen Fork) geprüft werden.
-ADR4 | Sqlite3 als erste Persistierung       | Für den MVP-Ansatz wurde das Datei-Datenbanksystem Sqlite3 ausgewählt, da es schnell einzurichten ist und das notwendige Python-Modul bereits im Python-Standard-Paket inkludiert ist. Die Erweiterung auf ein "echtes" DBMS wird angestrebt und sollte druch die erweitere Schnittstellendesign problemlos möglich sein.
+ADR3 | Eigene DB statt TestArchiver          | Der TestArchiver bietet ein umfassendes Schema für die Speicherung von Testergebnissen inkl. der automatischen Persisitierung durch einen eigenen Listener. Beim Test dieser Tools musste jedoch festgestellt werden, dass die entscheidende Tabelle mit den Ergebnissen der Testfälle nicht gefüllt werden. Deshalb wurde für den MVP eine eigenen DB aufgesetzt. Abhängig von den Erweiterungsoptionen sollte jedoch die Nutzung des TestArchivers (z. B. durch einen Fork) geprüft werden.
+ADR4 | Sqlite3 als erste Persistierung       | Für den MVP-Ansatz wurde das Datei-Datenbanksystem Sqlite3 ausgewählt, da es schnell einzurichten ist und das notwendige Python-Modul bereits im Python-Standard-Paket inkludiert ist. Die Erweiterung auf ein "echtes" DBMS wird angestrebt und sollte durch die erweitere Schnittstellendesign problemlos möglich sein.
 
 # Qualitätsanforderungen
 
@@ -235,7 +235,7 @@ Im der folgenden Grafik - dem sogenannten Qualitätsbaum (englisch: Utitlty Tree
 
 ## Qualitätsszenarien
 
-Konkrete Szenarien werden entweder als Nutzungs-/Anwendungsfall oder als Änderungsszenario, was passiert mit der Qualität bei Weiterentwicklung, angegeben. Die Anfangsbuchstabe der ID soll die Zuorndung zum (am besten passenden) Qualitätsmerkmale verdeutlichen. 
+Konkrete Szenarien werden entweder als Nutzungs-/Anwendungsfall oder als Änderungsszenario, was passiert mit der Qualität bei Weiterentwicklung, angegeben. Die Anfangsbuchstabe der ID soll die Zuordnung zum (am besten passenden) Qualitätsmerkmale verdeutlichen. 
 
 ID  | Szenario
 ----|-----------------------
@@ -245,14 +245,18 @@ F3  | Die verschiedenen Testläufe eines Testfalls werden im Box-Plot dargestell
 F4  | Die prozentuale Abweichung vom Durchschnitt zu den vergangen Testläufen wird angezeigt.
 B1  | Der Testautomatisierer möchte das Tool ohne umfangreiche Kenntnisse in seinen Testausführungs-CLI-Befehl integrieren.
 B2  | Der Testautomatisierer erwartet die Performance-Analyse in den gewohnten Ergebnisdateien.
-K1  | Das Tool stellt keine Anfoderungen oder Änderungen an die beschriebene Testspezifikation (`*.robot`).
+K1  | Das Tool stellt keine Anforderungen oder Änderungen an die beschriebene Testspezifikation (`*.robot`).
 Z1  | Fehler im Perfbot gefährden nicht die eigentliche Testdurchführung z. B. sollen keine Ergebnisse einer langlaufenden Testsuite aufgrund eines Fehlers im Tool verloren gehen.
 W1  | Ein Entwickler erwartete eine gute Dokumentation und Struktur des Quellcodes bzw. Repos. 
 W2  | Der Entwickler erwartet vorhandene Regressionstests und die Nutzung von statischer Codeanalyse.
-Ü1  | Das Tool soll auf einem bestehenden System mit Python/PiP installieren.
+Ü1  | Das Tool soll auf einem bestehenden System mit Python/PiP installierbar sein.
 Ü2  | Der Tool soll nicht auf die Testfälle eines Unternehmens beschränkt sein.
-Ü3  | Das Tool ist um andere Persistierungmöglichkeiten z. B. das DBMS MongoDB erweiterbar. 
-Ü4  | Die Performance-Analyse kann auch auf Schlüsselwörter (oder andere Objekte) erweitert werden. 
+Ü3  | Das Tool ist um andere Persistierungsmöglichkeiten z. B. das DBMS MongoDB erweiterbar. 
+Ü4  | Die Performance-Analyse kann auch auf Schlüsselwörter (oder andere Objekte) erweitert werden. (bereits geschehen)
+
+### Tests
+
+Die Qualität wird mittels automatisierten Regressionstests laufend betrachtet. Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](perfbot/tests/Testplan.md).
 
 
 # Risiken und technische Schulden
