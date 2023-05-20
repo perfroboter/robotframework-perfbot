@@ -110,13 +110,14 @@ Screenshot 2: Testbreaker in Aktion am Beispiel des Beispiels Login-Page
 | Antenne (Whisker) | Bis 1,5-facher Interquartilabstand (Länge der Box) werden auf beiden Seiten die Antennen dargestellt. | Antennen
 | Ausreißer | Alle Punkte außerhalb der Antennen | Einzelne Punkte (Raute)
 | Einzelwerte | Alle Einzelwerte werden als Punktwolke dargestellt. | Punktwolke (rund/grau)
-| Aktuelle Wert | Laufzeit in der gerade betrachteten Testlauf. | oranger Punkt
+| Aktuelle Laufzeit | Dauer des Testfalls/Keywords im der gerade betrachteten Testlauf. | oranger Punkt
 
 Quelle der Tabelle: [Wikipedia](https://de.wikipedia.org/wiki/Box-Plot) [Seaborn-Docs](https://seaborn.pydata.org/generated/seaborn.boxplot.html)
 
 ## Technische Dokumentation 
 
 Für weitere Details u. a. den architektonischen Aufbau siehe [ARC42_DOC.md](ARC42_DOC.md).
+Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](perfbot/tests/Testplan.md).
 
 ## Quellen
 Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgegriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgenden eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
