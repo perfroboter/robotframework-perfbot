@@ -180,7 +180,7 @@ Zeigt den zeitlichen Ablauf und die Triggerpunkte, wo die verschiedenen Perfbot-
 
 # Verteilungssicht
 
-- siehe Kompenentdiagramm oben
+- siehe Komponentendiagramm oben
 - Offenes TODO: Perfbot als PyPI Paket verfügbar zu machen
 
 # Architekturentscheidungen

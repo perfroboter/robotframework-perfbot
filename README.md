@@ -120,7 +120,7 @@ Für weitere Details u. a. den architektonischen Aufbau siehe [ARC42_DOC.md](ARC
 Einen Überblick über die statische Codeanalyse, Unit- und Integrationstests gibt der [Testplan](tests/Testplan.md).
 
 ## Quellen
-Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgegriffen und Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgenden eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
+Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Technologien zurückgegriffen und ggf. Codeschnipsel aus Implementierungsbeispielen übernommen. Im Folgenden eine Auflistung der entsprechenden Docs, Tutorials und Implementierungsbeispielen:
 
 -   [Robot Framework User Guide](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html) Version 6.0.2, insbesondere:
     - Kapitel *4.3 Listener interface* und zugehöriger Unterpunkt *Modifying execution and results*
