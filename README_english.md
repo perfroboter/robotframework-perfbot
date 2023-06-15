@@ -9,10 +9,9 @@
 
 
 ## Installation
+Requires `python` und `pip` in Version 3.10. or higher
 
-Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
-
-Repository klonen und folgenden Befehl ausführen: 
+Clone Repository and run this command: 
 ```bash
 python setup.py install
 # or
@@ -70,7 +69,7 @@ Screenshot 2: Testbreaker
 
 ## Technical documentation and References
 
-Actional only avaliable in German: See README.md, [ARC42_DOC.md](ARC42_DOC.md), [Testplan](tests/Testplan.md).
+Currently only available in german: see README.md, [ARC42_DOC.md](ARC42_DOC.md), [Testplan](tests/Testplan.md).
 
 
 ## License

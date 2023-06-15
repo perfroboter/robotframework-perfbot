@@ -4,30 +4,10 @@
 <img src="res/logo.png" width="80">
 
 ---
-(German README below)
 
 **Perfbot** determines performance regression based on existing automated UI tests. The tool extends the [Robot Framework](http://www.robotframework.org) by the possibility to store test runtimes in a database and compare them with archived runtimes of the past. The results of the performance analysis are integrated into the Robot test results (`log.html` / `report.html`).
 
-
-### Installation
-
-Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
-
-Repository klonen und folgenden Befehl ausführen: 
-```bash
-python setup.py install
-# or
-pip install [path to perfbot-folder]
-```
-
-### Quickstart
-
-Start the robot test cases including perfbot:
-```bash
-robot --prerebotmodifier perfbot.perfbot [path to tests]
-```
-
-For more Details see the: [README_english.md](README_english.md)
+For more Details incl. Quickstart see the: [README_english.md](README_english.md)
 
 ---
 
