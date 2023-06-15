@@ -4,25 +4,52 @@
 <img src="res/logo.png" width="80">
 
 ---
+(German README below)
 
-**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Das Werkzeug erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse wird in die Robot-Testresults (`log.html` / `report.html`) integriert.
+**Perfbot** determines performance regression based on existing automated UI tests. The tool extends the [Robot Framework](http://www.robotframework.org) by the possibility to store test runtimes in a database and compare them with archived runtimes of the past. The results of the performance analysis are integrated into the Robot test results (`log.html` / `report.html`).
 
 
-## Installation
+### Installation
 
 Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.8 (getestet auf 3.8.10 und 3.10.9))
 
 Repository klonen und folgenden Befehl ausführen: 
 ```bash
 python setup.py install
-robot --prerebotmodifier perfbot.perfbot:db_path="example/robot-exec-times.db example/test
+# or
+pip install [path to perfbot-folder]
+```
+
+### Quickstart
+
+Start the robot test cases including perfbot:
+```bash
+robot --prerebotmodifier perfbot.perfbot [path to tests]
+```
+
+For more Details see the: [README_english.md](README_english.md)
+
+---
+
+**Perfbot** ermittelt Performance-Veränderungen anhand von bestehenden automatisierten UI-Tests. Das Werkzeug erweitert dabei das [Robot Framework](http://www.robotframework.org) um die Möglichkeit, Test-Laufzeiten in einer Datenbank zu speichern und mit den archivierten Laufzeiten der Vergangenheit zu vergleichen. Das Ergebnisse der Performance-Analyse wird in die Robot-Testresults (`log.html` / `report.html`) integriert.
+
+
+## Installation
+
+Voraussetzung: `python` und `pip` ist installiert (Mindestversion 3.10 (getestet auf 3.11.2 und 3.10.11))
+
+Repository klonen und folgenden Befehl ausführen: 
+```bash
+python setup.py install
+# or
+pip install [path to perfbot-folder]
 ```
 
 ## Quickstart
 
 Starten der Robot-Testfälle inkl. Perfbot:
 ```bash
-robot robot --prerebotmodifier perfbot.perfbot [path to tests]
+robot --prerebotmodifier perfbot.perfbot [path to tests]
 ```
 ## Funktionsweise
 
@@ -146,5 +173,4 @@ Titel der Masterthesis: Automatisierte Performance-Analyse von IT-Anwendungen mi
 Student: Lennart Potthoff  
 Studiengang: M. Sc. Wirtschaftsinformatik (in Teilzeit)  
 Semester: Sommersemester 2023  
-Hochschule: FH Münster  
-Praxispartner: Provinzial Versicherung AG  
+Hochschule: FH Münster
