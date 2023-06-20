@@ -9,6 +9,7 @@ from .Sqlite3PersistenceService import Sqlite3PersistenceService
 from .PerfEvalVisualizer import PerfEvalVisualizer
 from .model import JoinedPerfTestResult, Keywordrun
 from typing import List
+import socket
 
 # Constants
 DEFAULT_MAX_DEVIATION_FROM_LAST_RUNS = 1.0 
@@ -92,7 +93,10 @@ class PerfEvalResultModifier(ResultVisitor):
         self.keywordstats = keywordstats
 
         if not self.readonly:
-            self.persistenceService.insert_test_execution(os.uname()[1])
+            try:
+                self.persistenceService.insert_test_execution(socket.gethostname())
+            except:
+                self.persistenceService.insert_test_execution("NO HOSTNAME")
 
 
 
