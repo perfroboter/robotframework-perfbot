@@ -33,7 +33,7 @@ The following additional functions are available:
 - **Keyword archiving** (enabled by default, under development): In addition to the runtimes of the test cases, the runtimes of the underlying keywords are also interesting. For this purpose, these runtimes are also stored in the database. To view the keyword runtimes, another tool called [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) has been added. This allows a detailed view of the performance of test and keywords.
 
 
-## Konfiguration
+## Configuration
 
 Starting the robot test cases incl. perfbot (by default with box plot mode and without testbreaker mode):
 ``bash
