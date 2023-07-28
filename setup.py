@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
       name='perfbot',
-      version="0.0.1",
-      description='Performance Analysis for Robot Framework',
+      version="1.0.0",
+      description='Perfbot',
       long_description='Performance Analysis for Robot Framework',
       classifiers=[
           'Framework :: Robot Framework',
@@ -13,7 +13,7 @@ setup(
       keywords='robotframework performance',
       author='Lennart Potthoff',
       author_email='git@circuit-break.in',
-      url='https://git.fh-muenster.de/robotframework-performance/perfbot',
+      url='https://github.com/perfroboter/robotframework-perfbot',
      license = 'MIT',
       
       packages=find_packages(),
