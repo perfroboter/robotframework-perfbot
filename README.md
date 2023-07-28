@@ -7,7 +7,7 @@
 
 **Perfbot** determines performance regression based on existing automated UI tests. The tool extends the [Robot Framework](http://www.robotframework.org) by the possibility to store test runtimes in a database and compare them with archived runtimes of the past. The results of the performance analysis are integrated into the Robot test results (`log.html` / `report.html`).
 
-For more Details incl. Quickstart see the: [README_english.md](README_english.md)
+For more details incl. quickstart see the: [README_english.md](README_english.md)
 
 ---
 
@@ -37,7 +37,7 @@ robot --prerebotmodifier perfbot.perfbot [path to tests]
 Folgende weitere Funktionen stehen zur Verfügung:
 - **Box-Plot** (standardmäßig aktiviert): Zu jedem Testfall wird ein [Box-Plot](https://de.wikipedia.org/wiki/Box-Plot) generiert, der die statistische Verteilung der Laufzeiten in Quartile grafisch aufbereitet. Die aktuelle Ausführungszeit des Tests wird mit dem Punkt markiert. Die Box-Plot-Erstellung kann aufgrund ihrer teils langlaufenden Erstellung deaktiviert werden (siehe Konfiguration).
 - **Testbreaker** (standardmäßig deaktiviert, Aktivierung siehe Konfiguration): Der Testbreaker vergleicht die Testdauer jedes Testfalls mit einem Maximalwert der prozentualen Abweichungen vom Durchschnitt der letzten Läufe. Lässt sich daraus ein Performanceproblem erkennen, so wir der Testfall auf FAIL gesetzt.
-- **Keyword-Archivierung** (standardmäßig aktiviert, in Entwicklung): Neben den Laufzeiten der Testfälle, sind auch die Laufzeiten der darunter liegenden Keywords interessant. Dafür werden auch diese Laufzeiten in der Datenbank gespeichert. Zur Betrachtung der Keyword-Laufzeiten wurde eine weiteres Tool namens [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics). Diese ermöglicht eine detailerte Betrachtung der Performance von Test- und Schlüsselwörtern.
+- **Keyword-Archivierung** (standardmäßig aktiviert, in Entwicklung): Neben den Laufzeiten der Testfälle, sind auch die Laufzeiten der darunter liegenden Keywords interessant. Dafür werden auch diese Laufzeiten in der Datenbank gespeichert. Zur Betrachtung der Keyword-Laufzeiten wurde eine weiteres Tool namens [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) (Veröffentlichung ausstehend). Diese ermöglicht eine detailerte Betrachtung der Performance von Test- und Schlüsselwörtern.
 
 ## Konfiguration
 
@@ -52,7 +52,7 @@ robot --prerebotmodifier perfbot.perfbot:db_path=[path to sqlite3 file] [path to
 ```
 
 Aktivierung des Testbreaker-Modus:  
-Beispiel: Bei einer Abweichung (`devn`) der Testlaufzeit von 10% vom Durchschnitt der vergangen Testläufe soll der Testfall auf FAIL gesetzt werden. (Hinweis: Perfbot läuft im Rebot-Schritt, die `output.xml` und CLI-Ausgaben werden durch den Testbreaker deshalb nicht verändert)
+Beispiel: Bei einer Abweichung (`devn`) der Testlaufzeit von 10% vom Durchschnitt der vergangen Testläufe soll der Testfall auf FAIL gesetzt werden. (Hinweis: Perfbot läuft im `rebot`-Schritt, die `output.xml` und CLI-Ausgaben werden durch den Testbreaker deshalb nicht verändert)
 ```bash
 robot --prerebotmodifier perfbot.perfbot:devn=0.1:testbreaker=True [path to tests]
 ```
@@ -70,7 +70,7 @@ robot --prerebotmodifier perfbot.perfbot:readonly=True [path to tests]
 ```
 
 Deaktivierung der Keyword-Speicherung: 
-Die Keyword-Analyse erfolgt nach gelagert mittels [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) (siehe oben). Sofern die Betrachtung der Keywords nicht relevant ist, kann zugunsten eines schnelleren Perfbots die Speicherung der Keyword-Laufzeiten deaktiviert werden:
+Die Keyword-Analyse erfolgt nachgelagert mittels [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) (siehe oben). Sofern die Betrachtung der Keywords nicht relevant ist, kann zugunsten eines schnelleren Perfbots die Speicherung der Keyword-Laufzeiten deaktiviert werden:
 ```bash
 robot --prerebotmodifier perfbot.perfbot:keywordstats=False [path to tests]
 ```
@@ -79,7 +79,7 @@ Ausführen von Perfbot mittels `rebot`:
 Die `log.html` und `report.html` von Robot-Testfällen können auch ohne Testausführung basierend auf der `output.xml` generiert werden.
 D. h. Perfbot kann nachträglich ohne Ausführung der Tests gestartet werden.
 Dazu ist eine bestehende `output.xml` nötig. Bei der Ausführung von Perfbot mittes `rebot` kann neben den HTML-Dokumenten auch eine neue  `output.xml` erzeugt werden, die dann auch den fehlgeschlagene Tests des Testbreaker enthält.
-Hinweis: Standardmäßig führt jede Ausführung von Perfbot zu neuen Datensätzen, doppelte Ausführungen zu gleichen Testdurchläufen sollte deshalb vermieden werden bzw. dann der Readonly-Modus genutzt werden.
+Hinweis: Standardmäßig führt jede Ausführung von Perfbot zu neuen Datensätzen, doppelte Ausführungen zu gleichen Testdurchläufen sollte deshalb vermieden werden bzw. dann der readonly-Modus genutzt werden.
 ```bash
 # Vgl. untenstehendes Beispiel
 rebot --prerebotmodifier perfbot.perfbot:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True --output example/newoutput.xml example/output.xml
@@ -151,6 +151,6 @@ Für den Aufbau dieses Repositories wurde auf die Docs der entsprechenden Techno
 Perfbot wurde im Rahmen einer Masterthesis erstellt:  
 Titel der Masterthesis: Automatisierte Performance-Analyse von IT-Anwendungen mit dem Testautomatisierungswerkzeug Robot Framework und Evaluation bei einem Versicherungsunternehmen  
 Student: Lennart Potthoff  
-Studiengang: M. Sc. Wirtschaftsinformatik (in Teilzeit)  
+Studiengang: M. Sc. Wirtschaftsinformatik
 Semester: Sommersemester 2023  
 Hochschule: FH Münster

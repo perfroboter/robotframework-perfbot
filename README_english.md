@@ -30,7 +30,7 @@ robot --prerebotmodifier perfbot.perfbot [path to tests]
 The following additional functions are available:
 - **Box Plot** (enabled by default): A [box plot](https://de.wikipedia.org/wiki/Box-Plot) is generated for each test case, which graphically displays the statistical distribution of runtimes in quartiles. The current execution time of the test is marked with the dot. The box plot generation can be disabled due to its partly long-running generation (see configuration).
 - **Testbreaker** (deactivated by default, activation see configuration): The testbreaker compares the test duration of each test case with a maximum value of the percentage deviations from the average of the last runs. If this indicates a performance problem, the test case is set to FAIL.
-- **Keyword archiving** (enabled by default, under development): In addition to the runtimes of the test cases, the runtimes of the underlying keywords are also interesting. For this purpose, these runtimes are also stored in the database. To view the keyword runtimes, another tool called [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) has been added. This allows a detailed view of the performance of test and keywords.
+- **Keyword archiving** (enabled by default, under development): In addition to the runtimes of the test cases, the runtimes of the underlying keywords are also interesting. For this purpose, these runtimes are also stored in the database. To view the keyword runtimes, another tool called [Perfmetrics](https://git.fh-muenster.de/robotframework-performance/perfmetrics) (prototype, not published yet) has been added. This allows a detailed view of the performance of test and keywords.
 
 
 ## Configuration
@@ -67,9 +67,9 @@ Screenshot 2: Testbreaker
 ![](res/example-testbreaker.png)
 
 
-## Technical documentation and References
+## Technical documentation, testplan and references
 
-Currently only available in german: see README.md, [ARC42_DOC.md](ARC42_DOC.md), [Testplan](tests/Testplan.md).
+Currently only available in german: see [README.md](README.md), [ARC42_DOC.md](ARC42_DOC.md), [Testplan](tests/Testplan.md).
 
 
 ## License
