@@ -62,7 +62,7 @@ python example/sut/server.py
 # 2. Running rests and perfbot
 robot --prerebotmodifier perfbot.perfbot:devn=0.1:db_path="example/robot-exec-times.db":testbreaker=True example/tests
 ```
-Screenshot 1: Included performance analysis in log.html:
+Screenshot 1: Included performance analysis in log.html. The boxplot demontrates the spread of archived test execution times. The orange dot symbolies the duration of the current test run.
 ![](res/example-test-suite-summary.png)
 
 Screenshot 2: Testbreaker
