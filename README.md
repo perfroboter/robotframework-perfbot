@@ -40,11 +40,9 @@ The following additional functions are available:
 ## Configuration
 
 Starting the robot test cases incl. perfbot (by default with box plot mode and without testbreaker mode):
-``bash
+```bash
 robot --prerebotmodifier perfbot.perfbot [path to tests]
 ```
-
-
 
 Starting Perfbot with all possible parameters
 ```bash
