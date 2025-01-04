@@ -9,9 +9,9 @@ Library    Screenshot
 *** Test Cases ***
 Valid Login
     Open Browser To Login Page
+    Login Page Should Be Open
     Input Username    demo
     Input Password    mode
     Submit Credentials
-#    Sleep    20
     Welcome Page Should Be Open
     [Teardown]    Close Browser
