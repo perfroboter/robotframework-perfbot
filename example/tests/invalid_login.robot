@@ -30,5 +30,5 @@ Login With Invalid Credentials Should Fail
     Login Should Have Failed
 
 Login Should Have Failed
-    Location Should Be    ${ERROR URL}
-    Title Should Be    Error Page
+    Get Url    *=    ${ERROR URL}
+    Get Title    equals    Error Page

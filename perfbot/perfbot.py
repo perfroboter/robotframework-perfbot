@@ -19,4 +19,4 @@ class perfbot(PerfEvalResultModifier):
     pass
 
 def main():
-    print("Please start with --prerobotmodifier Option of rebot oder robot")
+    print("Please start with --prerobotmodifier option of rebot or robot")
