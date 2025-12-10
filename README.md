@@ -8,7 +8,15 @@
 
 ---
 
-For the german version of this quickstart see: [README_german.md](README_german.md)
+### 📺 RoboCon Talk
+
+🎉 Great news!  The corresponding RoboCon 2025 talk is now on YouTube! 😃 - [RoboCon 2025 - Perfbot - Integrated performance analysis of robot tests](https://www.youtube.com/watch?v=ZQzVJYA3_4U)! 
+
+---
+
+### 🚀 New Alternative: Robot Framework Dashboard
+
+A modern alternative for visualizing test results, including several features for performance analysis, is [Robot Framework Dashboard](https://github.com/timdegroot1996/robotframework-dashboard).
 
 ---
 
@@ -23,6 +31,13 @@ pip install [path to perfbot-folder]
 ```
 
 ## Quickstart
+
+---
+
+For the german version of this quickstart see: [README_german.md](README_german.md)
+
+---
+
 
 Start the robot test cases including perfbot:
 ```bash
