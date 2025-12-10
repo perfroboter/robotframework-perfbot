@@ -17,6 +17,7 @@
 ### 🚀 New Alternative: Robot Framework Dashboard
 
 A modern alternative for visualizing test results, including several features for performance analysis, is [Robot Framework Dashboard](https://github.com/timdegroot1996/robotframework-dashboard).
+What sets Perfbot apart is its seamless integration into the standard output reports and its unique visualization of performance data with boxplots.
 
 ---
 
