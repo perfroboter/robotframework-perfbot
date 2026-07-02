@@ -23,6 +23,8 @@ SQL_SELECT_TESTCASE_RUN_STATS_OF_TESTSUITE = "SELECT name, longname, AVG(elapsed
 SQL_SELECT_KEYWORD_RUN_STATS_GLOBAL = "SELECT kw_name, kw_longname, libname, avg(elapsedtime) as avg, min(elapsedtime) as min, max(elapsedtime) as max, count(elapsedtime) as count FROM keyword_run_view GROUP BY kw_longname;"
 SQL_SELECT_KEYWORD_RUN_STATS_POSITIONAL = "SELECT kw_name, kw_longname, testcase_longname, parent_keyword_longname, libname, keyword_level, stepcounter, avg(elapsedtime) as avg, min(elapsedtime) as min, max(elapsedtime) as max, count(elapsedtime) as count FROM keyword_run_view GROUP BY testcase_longname, kw_longname, stepcounter;"
 SQL_SELECT_KEYWORD_RUN_STATS_POSITIONAL_FILTERED_BY_TESTCASE = "SELECT kw_name, kw_longname, testcase_longname, parent_keyword_longname, libname, keyword_level, stepcounter, avg(elapsedtime) as avg, min(elapsedtime) as min, max(elapsedtime) as max, count(elapsedtime) as count FROM keyword_run_view WHERE testcase_longname = ? GROUP BY testcase_longname, kw_longname, stepcounter;"
+SQL_SELECT_KEYWORD_RUNS_LEVEL1_FILTERED_BY_TESTSUITE = "SELECT kw_name, kw_longname, testcase_longname, stepcounter, elapsedtime, status FROM keyword_run_view WHERE keyword_level = 1 AND testcase_longname LIKE ? AND status='PASS';"
+SQL_SELECT_KEYWORD_STATS_LEVEL1_FILTERED_BY_TESTSUITE = "SELECT kw_name, kw_longname, testcase_longname, stepcounter, avg(elapsedtime) as avg, min(elapsedtime) as min, max(elapsedtime) as max, count(elapsedtime) as count FROM keyword_run_view WHERE keyword_level = 1 AND testcase_longname LIKE ? AND status='PASS' GROUP BY testcase_longname, kw_longname, stepcounter;"
 
 class Sqlite3PersistenceService(PersistenceService):
     """Persistierung der Testergebnisse erfolgt in einer lokalen Sqlite3-Datei.
@@ -118,6 +120,28 @@ class Sqlite3PersistenceService(PersistenceService):
         else:
             self.cur.execute(SQL_SELECT_KEYWORD_RUN_STATS_POSITIONAL)
             return self.cur.fetchall()
+
+    def select_keyword_runs_level1_filtered_by_suitename(self, suite_longname):
+        """Liefert alle Keyword-Runs der ersten Ebene (Level 1) gefiltert nach Suite-Langname.
+        
+        :param suite_longname: Langname der Testsuite
+        :type suite_longname: str
+        :return: Liste von Keyword-Run-Tupeln (kw_name, kw_longname, testcase_longname, stepcounter, elapsedtime, status)
+        :rtype: list
+        """
+        self.cur.execute(SQL_SELECT_KEYWORD_RUNS_LEVEL1_FILTERED_BY_TESTSUITE, (str(suite_longname + "%"),))
+        return self.cur.fetchall()
+
+    def select_keyword_stats_level1_filtered_by_suitename(self, suite_longname):
+        """Liefert Statistiken (avg, min, max, count) der Level-1-Keywords gruppiert nach Position im Testfall.
+        
+        :param suite_longname: Langname der Testsuite
+        :type suite_longname: str
+        :return: Liste von Statistik-Tupeln (kw_name, kw_longname, testcase_longname, stepcounter, avg, min, max, count)
+        :rtype: list
+        """
+        self.cur.execute(SQL_SELECT_KEYWORD_STATS_LEVEL1_FILTERED_BY_TESTSUITE, (str(suite_longname + "%"),))
+        return self.cur.fetchall()
 
 
 

@@ -15,6 +15,34 @@ class PerfEvalVisualizer:
     def __init__(self, boxplot_folder=None):
         self.boxplot_folder = boxplot_folder
 
+    def generate_boxplot_of_keywords(self, hist_keyword_runs, act_keyword_runs):
+        """Erzeugt einen Boxplot für Level-1-Keywords analog zu den Testfällen.
+        
+        :param hist_keyword_runs: Historische Keyword-Runs als Liste von Tupeln 
+               (kw_name, kw_longname, testcase_longname, stepcounter, elapsedtime, status)
+        :type hist_keyword_runs: list
+        :param act_keyword_runs: Aktuelle Keyword-Runs als Liste von Tupeln
+               (kw_name, testcase_name, elapsedtime)
+        :type act_keyword_runs: list
+        :return: Pfad zur Bilddatei
+        :rtype: str
+        """
+        hist = pd.DataFrame(hist_keyword_runs, 
+                           columns=["kw_name", "kw_longname", "testcase_longname", "stepcounter", "elapsedtime", "status"], 
+                           copy=True)
+        # Erzeuge einen kombinierten Label: "Testcase > Keyword" für bessere Zuordnung
+        hist["label"] = hist["testcase_longname"].apply(lambda x: x.split(".")[-1]) + " > " + hist["kw_name"]
+
+        act = pd.DataFrame(act_keyword_runs, 
+                          columns=["kw_name", "testcase_name", "elapsedtime"], 
+                          copy=True)
+        act["label"] = act["testcase_name"] + " > " + act["kw_name"]
+
+        return self.generate_boxplot(hist, act, x="elapsedtime", y="label",
+                                     xlabel="Duration (s)", ylabel="Keyword",
+                                     heading="Box-Plot of keyword duration times (Level 1)",
+                                     format="png")
+
     def generate_boxplot_of_tests(self, hist_tests, act_tests):
         """Wrapper zum Aufruf von :py:meth:`~PerfEvalVisualizer.generate_boxplot()`.
         :param hist_tests: historische Daten als Liste

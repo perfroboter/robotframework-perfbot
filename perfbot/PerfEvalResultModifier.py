@@ -22,6 +22,8 @@ TEXT_PERF_ANALYSIS_TABLE_HEADING = "*Summary of Tests Performance*\n\n| =Testcas
 TEXT_PERF_ANALYSIS_TABLE_ROW =  "| {name}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n" 
 TEXT_PERF_ANALYSIS_BOXPLOT = ""
 TEXT_PERF_ANALYSIS_FOOTNOTE = ""
+TEXT_KW_ANALYSIS_TABLE_HEADING = "\n\n---\n\n*Summary of Keyword Performance (Level 1)*\n\n| =Testcase= | =Keyword= |  =Elapsed=  | =Avg= | =Min= | =Max= | =Evaluated runs= | =Deviation from avg= |\n"
+TEXT_KW_ANALYSIS_TABLE_ROW = "| {testcase}  | {keyword}  | {elapsedtime}  | {avg} | {min} | {max} | {count} | {devn} % |\n"
 TEXT_PERF_ERROR_MESSAGE = "PerfError: Test run lasted {calced_devn:.2f} % than the average runs in the past and is thus above the maximum threshold of {max_devn:.2f} % (original test status was {old_test_status})."
 
 
@@ -107,6 +109,7 @@ class PerfEvalResultModifier(ResultVisitor):
         - Wegschreiben der Ausführungsergebnisse aller Tests der Testsuite
         - Performanzstatiskten abrufen und für HTML aufbereiten
         - weitere Daten für Boxplot holen und Boxplot genieren
+        - Keyword-Level-1-Statistiken und Boxplot generieren
 
 
         :param suite: übergebene TestSuite inkl. aller Tests
@@ -129,6 +132,9 @@ class PerfEvalResultModifier(ResultVisitor):
                     rel_path_boxplot = self.visualizer.generate_boxplot_of_tests(testruns,suite.tests)
                     text+= "\n *Box-Plot* \n\n  ["+ rel_path_boxplot + "| Boxplot ]"
 
+            # Keyword Level 1 Analyse
+            if self.keywordstats:
+                text += self._get_keyword_analysis(suite)
 
             suite.metadata["Performance Analysis"] = text
 
@@ -240,6 +246,123 @@ class PerfEvalResultModifier(ResultVisitor):
         text: str = TEXT_PERF_ANALYSIS_TABLE_HEADING
         for t in joined_perf_result_list:
             text+= TEXT_PERF_ANALYSIS_TABLE_ROW.format(name=t.name,elapsedtime=self._format_time_string(t.elapsedtime),avg=self._format_time_string(t.avg) if t.avg is not None else "NO STATS",min=self._format_time_string(t.min) if t.min is not None else "NO STATS",max=self._format_time_string(t.max) if t.max is not None else "NO STATS",count=t.count if t.count is not None else "NO STATS",devn=f'{t.devn:.2f}' if t.devn is not None else "NO STATS")
+        return text
+
+    def _get_keyword_analysis(self, suite: TestSuite) -> str:
+        """Erzeugt die Keyword-Level-1-Analyse: Statistik-Tabelle und Boxplot.
+
+        :param suite: Die aktuelle Testsuite
+        :type suite: TestSuite
+        :return: Formatierter Text mit Keyword-Tabelle und ggf. Boxplot-Verweis
+        :rtype: str
+        """
+        # Keyword-Statistiken aus der DB holen (Level 1, gefiltert nach Suite)
+        keyword_stats = self.persistenceService.select_keyword_stats_level1_filtered_by_suitename(suite.longname)
+
+        if not keyword_stats:
+            return TEXT_KW_ANALYSIS_TABLE_HEADING + "| - | No keyword statistics available yet | - | - | - | - | - | - |\n"
+
+        # Aktuelle Level-1-Keywords aus den Testfällen extrahieren
+        act_keywords = self._extract_current_level1_keywords(suite.tests)
+
+        # Keyword-Tabelle generieren
+        text = self._get_keyword_result_table(keyword_stats, act_keywords)
+
+        # Keyword-Boxplot generieren
+        if self.boxplot_activated:
+            keyword_runs = self.persistenceService.select_keyword_runs_level1_filtered_by_suitename(suite.longname)
+
+            if len(keyword_runs) == 0:
+                text += "\n *Keyword Box-Plot* \n\n No historical keyword data to generate the Boxplot"
+            else:
+                # act_keyword_runs für den Visualizer vorbereiten: (kw_name, testcase_name, elapsedtime)
+                act_kw_for_plot = [(kw["kw_name"], kw["testcase_name"], kw["elapsedtime"]) for kw in act_keywords]
+                rel_path_boxplot = self.visualizer.generate_boxplot_of_keywords(keyword_runs, act_kw_for_plot)
+                text += "\n *Keyword Box-Plot* \n\n  [" + rel_path_boxplot + "| Keyword Boxplot ]"
+
+        return text
+
+    def _extract_current_level1_keywords(self, tests) -> list:
+        """Extrahiert die aktuellen Level-1-Keywords (erste Ebene) aus den Testfällen.
+
+        :param tests: Liste der Testfälle der Suite
+        :type tests: List[TestCase]
+        :return: Liste von Dicts mit kw_name, testcase_name, testcase_longname, elapsedtime
+        :rtype: list
+        """
+        act_keywords = []
+        for test in tests:
+            if test.setup and isinstance(test.setup, Keyword):
+                act_keywords.append({
+                    "kw_name": test.setup.kwname,
+                    "testcase_name": test.name,
+                    "testcase_longname": test.longname,
+                    "elapsedtime": test.setup.elapsedtime
+                })
+            for bodyItem in test.body:
+                if isinstance(bodyItem, Keyword):
+                    act_keywords.append({
+                        "kw_name": bodyItem.kwname,
+                        "testcase_name": test.name,
+                        "testcase_longname": test.longname,
+                        "elapsedtime": bodyItem.elapsedtime
+                    })
+            if test.teardown and isinstance(test.teardown, Keyword):
+                act_keywords.append({
+                    "kw_name": test.teardown.kwname,
+                    "testcase_name": test.name,
+                    "testcase_longname": test.longname,
+                    "elapsedtime": test.teardown.elapsedtime
+                })
+        return act_keywords
+
+    def _get_keyword_result_table(self, keyword_stats, act_keywords) -> str:
+        """Erzeugt die formatierte Keyword-Statistik-Tabelle.
+
+        :param keyword_stats: Liste von Statistik-Tupeln aus der DB
+               (kw_name, kw_longname, testcase_longname, stepcounter, avg, min, max, count)
+        :type keyword_stats: list
+        :param act_keywords: Aktuelle Level-1-Keywords als Liste von Dicts
+        :type act_keywords: list
+        :return: Formatierte Tabelle
+        :rtype: str
+        """
+        text = TEXT_KW_ANALYSIS_TABLE_HEADING
+
+        for kw in act_keywords:
+            # Passende Statistik finden (über testcase_longname und kw_name)
+            matching_stat = None
+            for stat in keyword_stats:
+                # stat: (kw_name, kw_longname, testcase_longname, stepcounter, avg, min, max, count)
+                if stat[2] == kw["testcase_longname"] and stat[0] == kw["kw_name"]:
+                    matching_stat = stat
+                    break
+
+            if matching_stat:
+                avg = matching_stat[4]
+                devn = ((kw["elapsedtime"] - avg) / avg) * 100 if avg else None
+                text += TEXT_KW_ANALYSIS_TABLE_ROW.format(
+                    testcase=kw["testcase_name"],
+                    keyword=kw["kw_name"],
+                    elapsedtime=self._format_time_string(kw["elapsedtime"]),
+                    avg=self._format_time_string(matching_stat[4]),
+                    min=self._format_time_string(matching_stat[5]),
+                    max=self._format_time_string(matching_stat[6]),
+                    count=matching_stat[7],
+                    devn=f'{devn:.2f}' if devn is not None else "NO STATS"
+                )
+            else:
+                text += TEXT_KW_ANALYSIS_TABLE_ROW.format(
+                    testcase=kw["testcase_name"],
+                    keyword=kw["kw_name"],
+                    elapsedtime=self._format_time_string(kw["elapsedtime"]),
+                    avg="NO STATS",
+                    min="NO STATS",
+                    max="NO STATS",
+                    count="NO STATS",
+                    devn="NO STATS"
+                )
+
         return text
 
     def _format_time_string(self, val):
